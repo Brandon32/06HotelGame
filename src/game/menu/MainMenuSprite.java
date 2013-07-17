@@ -1,4 +1,4 @@
-package game;
+package game.menu;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -11,12 +11,9 @@ import java.io.IOException;
 
 import engine.GameDisplay;
 import engine.ImageUtil;
-import engine.event.GameEvent;
-import engine.event.GameEvent.GameEventType;
-import engine.event.GameEventDispatcher;
 import engine.sprite.UI;
 
-public class MainMenu implements UI {
+public class MainMenuSprite implements UI {
 	private final int MAX_SELECTIONS = 4;
 	private final double MAX_SIZE = 40;
 	private final double MIN_SIZE = 30;
@@ -46,6 +43,7 @@ public class MainMenu implements UI {
 		}
 	}
 
+	Dimension displayBounds;
 	private static int width0;
 	private static int width1;
 	private static int width2;
@@ -57,37 +55,31 @@ public class MainMenu implements UI {
 	private static int height3;
 	private static int height4;
 
-	private Dimension displayBounds;
-	private String loadGame;
-	private String newGame;
-	private String help;
-	private boolean down;
-	private boolean up;
+	private String[] element;
+
 	private Selected selected = Selected.NEW;
 	private Color color1 = Color.BLUE;
 	private Color color2 = Color.BLACK;
 	private Font f1;
 	private Font f2;
-	private String exit;
-	private BufferedImage backgroundImage;
-	private String settings;
-	private int mouseX;
-	private int mouseY;
 
-	public MainMenu() {
-		loadGame = "Continue Game";
-		newGame = "New Game";
-		help = "Help";
-		settings = "Settings";
-		exit = "Exit Game";
+	private BufferedImage backgroundImage;
+
+	boolean down;
+	boolean up;
+	int mouseX;
+	int mouseY;
+	boolean done;
+
+	public MainMenuSprite() {
+		element = new String[6];
+		element[0] = "Continue Game";
+		element[1] = "New Game";
+		element[2] = "Help";
+		element[3] = "Settings";
+		element[4] = "Exit Game";
 
 		displayBounds = GameDisplay.getBounds();
-
-		height0 = (int) (((0 / (float) MAX_SELECTIONS) * (0.9) * displayBounds.height) + (displayBounds.height * 0.075));
-		height1 = (int) (((1 / (float) MAX_SELECTIONS) * (0.9) * displayBounds.height) + (displayBounds.height * 0.075));
-		height2 = (int) (((2 / (float) MAX_SELECTIONS) * (0.9) * displayBounds.height) + (displayBounds.height * 0.075));
-		height3 = (int) (((3 / (float) MAX_SELECTIONS) * (0.9) * displayBounds.height) + (displayBounds.height * 0.075));
-		height4 = (int) (((4 / (float) MAX_SELECTIONS) * (0.9) * displayBounds.height) + (displayBounds.height * 0.075));
 
 		down = false;
 		up = false;
@@ -110,24 +102,14 @@ public class MainMenu implements UI {
 					displayBounds.height, null);
 		}
 
-		setText(g, 0);
-		width0 = ((displayBounds.width - g.getFontMetrics()
-				.stringWidth(newGame)) / 2);
-		g.drawString(newGame, width0, height0);
-		setText(g, 1);
-		width1 = ((displayBounds.width - g.getFontMetrics().stringWidth(
-				loadGame)) / 2);
-		g.drawString(loadGame, width1, height1);
-		setText(g, 2);
-		width2 = ((displayBounds.width - g.getFontMetrics().stringWidth(help)) / 2);
-		g.drawString(help, width2, height2);
-		setText(g, 3);
-		width3 = ((displayBounds.width - g.getFontMetrics().stringWidth(
-				settings)) / 2);
-		g.drawString(settings, width3, height3);
-		setText(g, 4);
-		width4 = ((displayBounds.width - g.getFontMetrics().stringWidth(exit)) / 2);
-		g.drawString(exit, width4, height4);
+		for (int i = 0; i < element.length; i++) {
+			setText(g, i);
+			g.drawString(
+					element[i],
+					((displayBounds.width - g.getFontMetrics().stringWidth(element[i])) / 2),
+					(int) (((i / (float) element.length) * (0.9) * displayBounds.height) + (displayBounds.height * 0.075)));
+
+		}
 	}
 
 	@Override
@@ -165,7 +147,7 @@ public class MainMenu implements UI {
 				down = true;
 			}
 			if (ke.getKeyCode() == KeyEvent.VK_ENTER) {
-				exit();
+				done = true;
 			}
 		}
 	}
@@ -181,25 +163,34 @@ public class MainMenu implements UI {
 			mouseSelect();
 		}
 		if (me.getButton() == MouseEvent.BUTTON1) {
-			exit();
+			done = true;
 		}
 	}
-	
-	private void mouseSelect(){
-		if (mouseY < height0 + MAX_SIZE)
-			selected = Selected.NEW;
-		if (mouseY > height1 - MAX_SIZE)
-			selected = Selected.LOAD;
-		if (mouseY > height2 - MAX_SIZE)
-			selected = Selected.HELP;
-		if (mouseY > height3 - MAX_SIZE)
-			selected = Selected.SETTINGS;
-		if (mouseY > height4 - MAX_SIZE)
-			selected = Selected.EXIT;
-		
+
+	public boolean isDone() {
+		return done;
 	}
 
-	public void setText(Graphics2D g, int val) {
+	public int getSelectedValue() {
+		return (selected.getValue());
+	}
+
+	private void mouseSelect() {
+
+		if ((mouseY > height0 - MAX_SIZE) && (mouseY < height0 + MAX_SIZE))
+			selected = Selected.NEW;
+		if ((mouseY > height1 - MAX_SIZE) && (mouseY < height1 + MAX_SIZE))
+			selected = Selected.LOAD;
+		if ((mouseY > height2 - MAX_SIZE) && (mouseY < height2 + MAX_SIZE))
+			selected = Selected.HELP;
+		if ((mouseY > height3 - MAX_SIZE) && (mouseY < height3 + MAX_SIZE))
+			selected = Selected.SETTINGS;
+		if ((mouseY > height4 - MAX_SIZE) && (mouseY < height4 + MAX_SIZE))
+			selected = Selected.EXIT;
+
+	}
+
+	void setText(Graphics2D g, int val) {
 		if (selected.getValue() == val) {
 			g.setFont(f2);
 			g.setColor(color2);
@@ -209,8 +200,4 @@ public class MainMenu implements UI {
 		}
 	}
 
-	public void exit() {
-		GameEventDispatcher.dispatchEvent(new GameEvent(this,
-				GameEventType.Start, selected.getValue()));
-	}
 }

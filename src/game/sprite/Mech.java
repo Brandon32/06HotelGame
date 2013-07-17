@@ -1,4 +1,4 @@
-package game;
+package game.sprite;
 
 import java.awt.Color;
 import java.awt.Dimension;

@@ -1,8 +1,10 @@
 package game;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -22,7 +24,7 @@ import engine.sprite.Image;
 import engine.sprite.Sprite;
 import engine.sprite.UI;
 import game.levels.Level01;
-import game.levels.MainMenu;
+import game.menu.MainMenu;
 
 public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	/**
@@ -78,9 +80,10 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		 * / Get the native resolution / TODO: 16:9 Recommended, Account for 4:3
 		 * and 16:10
 		 */
-		// Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		// displayWidth = (int) screenSize.getWidth();
-		// displayHeight = (int) screenSize.getHeight();
+		 @SuppressWarnings("unused")
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+//		 displayWidth = (int) screenSize.getWidth();
+//		 displayHeight = (int) screenSize.getHeight();
 
 		/**
 		 * Create our game display
@@ -196,7 +199,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		}
 		case STARTING: {
 			if (time == 0) {
-				System.out.println("Starting");
+				System.out.println("Starting " + GAME_NAME);
 				time = GameEngine.getCurrentTime(); // TODO get system time from
 													// engine
 			}
