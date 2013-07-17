@@ -1,4 +1,4 @@
-package engine.Event;
+package engine.event;
 
 /**
  * Game event class. Used to pass async messages back to the main
@@ -16,7 +16,7 @@ public class GameEvent
      */
     public enum GameEventType
     {
-        AddFirst, AddLast, End, Help, Life, Menu, Quit, Remove, Score, Start, EnemyDown, Load, NextLevel
+        End, Help, Life, Quit, Score, Start, EnemyDown, Load, Menu, NextLevel, AddLast, AddFirst, Remove, Restart
     };
 
     private Object attachment;

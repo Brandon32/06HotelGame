@@ -1,6 +1,6 @@
 package engine;
 
-import engine.Event.GameEvent;
+import engine.event.GameEvent;
 
 /**
  * Game interface for the Game Engine class

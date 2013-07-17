@@ -2,9 +2,9 @@ package engine;
 
 import java.util.LinkedList;
 
-import engine.Event.GameEvent;
-import engine.Event.GameEventDispatcher;
-import engine.Event.GameEventListener;
+import engine.event.GameEvent;
+import engine.event.GameEventDispatcher;
+import engine.event.GameEventListener;
 
 
 /**
@@ -146,10 +146,14 @@ public class GameEngine implements Runnable, GameEventListener
      * the game engine.
      * 
      */
+    private static long currentTime = System.nanoTime();
+    public static long getCurrentTime(){
+    	return currentTime;
+    }
+    
     public void run()
     {
 		long lastTime = System.nanoTime();
-        long beforeTime;
         int ticks = 0;
 		int frames = 0;
 		double unprocessed = 0;
@@ -159,11 +163,10 @@ public class GameEngine implements Runnable, GameEventListener
         running = true;
         while ( running )
         {
-            beforeTime = System.nanoTime();
-			unprocessed += (beforeTime - lastTime) / nsPerTick;
-			lastTime = beforeTime;
+            currentTime = System.nanoTime();
+			unprocessed += (currentTime - lastTime) / nsPerTick;
+			lastTime = currentTime;
 			boolean shouldRender = true;
-			
 			
 			while (unprocessed >= 1)
 			{
@@ -171,7 +174,6 @@ public class GameEngine implements Runnable, GameEventListener
 				game.collisions();
 				game.update();
 				unprocessed -= 1;
-				//shouldRender = true;
 			}
 			
 			if (shouldRender) {

@@ -1,4 +1,4 @@
-package Sprite;
+package engine.sprite;
 
 import java.awt.Rectangle;
 
@@ -7,7 +7,7 @@ import java.awt.Rectangle;
  * 
  * @author williamhooper
  */
-public interface Sprite extends Image, UI
+public interface Sprite extends Image
 {
 
 	/**

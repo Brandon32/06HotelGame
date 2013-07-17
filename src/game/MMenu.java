@@ -16,7 +16,7 @@ import engine.event.GameEvent.GameEventType;
 import engine.event.GameEventDispatcher;
 import engine.sprite.UI;
 
-public class MainMenu implements UI {
+public class MMenu implements UI {
 	private final int MAX_SELECTIONS = 4;
 	private final double MAX_SIZE = 40;
 	private final double MIN_SIZE = 30;
@@ -74,7 +74,7 @@ public class MainMenu implements UI {
 	private int mouseX;
 	private int mouseY;
 
-	public MainMenu() {
+	public MMenu() {
 		loadGame = "Continue Game";
 		newGame = "New Game";
 		help = "Help";
@@ -184,19 +184,20 @@ public class MainMenu implements UI {
 			exit();
 		}
 	}
-	
-	private void mouseSelect(){
-		if (mouseY < height0 + MAX_SIZE)
+
+	private void mouseSelect() {
+
+		if ((mouseY > height0 - MAX_SIZE) && (mouseY < height0 + MAX_SIZE))
 			selected = Selected.NEW;
-		if (mouseY > height1 - MAX_SIZE)
+		if ((mouseY > height1 - MAX_SIZE) && (mouseY < height1 + MAX_SIZE))
 			selected = Selected.LOAD;
-		if (mouseY > height2 - MAX_SIZE)
+		if ((mouseY > height2 - MAX_SIZE) && (mouseY < height2 + MAX_SIZE))
 			selected = Selected.HELP;
-		if (mouseY > height3 - MAX_SIZE)
+		if ((mouseY > height3 - MAX_SIZE) && (mouseY < height3 + MAX_SIZE))
 			selected = Selected.SETTINGS;
-		if (mouseY > height4 - MAX_SIZE)
+		if ((mouseY > height4 - MAX_SIZE) && (mouseY < height4 + MAX_SIZE))
 			selected = Selected.EXIT;
-		
+
 	}
 
 	public void setText(Graphics2D g, int val) {
@@ -210,7 +211,27 @@ public class MainMenu implements UI {
 	}
 
 	public void exit() {
-		GameEventDispatcher.dispatchEvent(new GameEvent(this,
-				GameEventType.Start, selected.getValue()));
+		switch (selected.getValue()) {
+		case 0:// NEW(0)
+			Start.setGameProgress(1);
+			GameEventDispatcher.dispatchEvent(new GameEvent(this,
+					GameEventType.Load, this));
+			break;
+		case 1:// LOAD(1)
+			GameEventDispatcher.dispatchEvent(new GameEvent(this,
+					GameEventType.Load, this));
+			break;
+		case 2:// HELP(2)
+			break;
+		case 3:// SETTINGS(3)
+			GameEventDispatcher.dispatchEvent(new GameEvent(this,
+					GameEventType.Restart, this));
+			break;
+		case 4:// EXIT(4)
+			GameEventDispatcher.dispatchEvent(new GameEvent(this,
+					GameEventType.End, this));
+			break;
+		}
+
 	}
 }

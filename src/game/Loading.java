@@ -6,8 +6,8 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import Sprite.UI;
 import engine.ImageUtil;
+import engine.sprite.UI;
 
 public class Loading implements UI {
 	

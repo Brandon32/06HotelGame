@@ -9,23 +9,26 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.LinkedList;
 
-import levels.Level01;
-import Sprite.Sprite;
-import Sprite.UI;
 import engine.Game;
 import engine.GameDisplay;
 import engine.GameEngine;
 import engine.ImageUtil;
-import engine.Event.GameEvent;
-import engine.Event.GameEvent.GameEventType;
-import engine.Event.GameEventDispatcher;
-import engine.Event.GameEventKeyboard;
-import engine.Event.GameEventMouse;
+import engine.event.GameEvent;
+import engine.event.GameEvent.GameEventType;
+import engine.event.GameEventDispatcher;
+import engine.event.GameEventKeyboard;
+import engine.event.GameEventMouse;
+import engine.sprite.Image;
+import engine.sprite.Sprite;
+import engine.sprite.UI;
+import game.levels.Level01;
+import game.levels.MainMenu;
 
 public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	/**
 	 * Our list of sprites
 	 */
+	static final String GAME_NAME = "Mech Game";
 	private static String title = "Game";
 	private static int displayHeight = 720; // 720p
 	private static int displayWidth = 1280;
@@ -33,18 +36,19 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	private static int gameProgress = 0;
 	private static Boolean debug = true; // switch to false on release
 
-	private LinkedList<Sprite> spriteList;
-	private UI gameLevel;
+	private LinkedList<Sprite> colisionList;
+	private LinkedList<Image> drawList;
+	private LinkedList<UI> keyList;
+	private Image gameLevel;
 
 	private BufferedImage loadingImage;
 	private BufferedImage icon;
-	private int startType;
 
 	private long time = 0;
 	private Font f1;
 
 	private enum GameState {
-		STARTING, RUNNING, PAUSED, ENDING, RESTART
+		STARTING, RUNNING, PAUSED, ENDING, RESTARTING
 	}
 
 	private static GameState gameState = GameState.STARTING;
@@ -69,7 +73,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 
 	/*--Constructor-------------------------------------------------------------------------------------------*/
 	public Start() {
-		
+
 		/**
 		 * / Get the native resolution / TODO: 16:9 Recommended, Account for 4:3
 		 * and 16:10
@@ -90,7 +94,10 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		 * Create our list of sprites
 		 */
 
-		spriteList = new LinkedList<Sprite>();
+		colisionList = new LinkedList<Sprite>();
+		drawList = new LinkedList<Image>();
+		keyList = new LinkedList<UI>();
+
 		/**
 		 * Add a mouse listener so we can get mouse events
 		 */
@@ -120,9 +127,9 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		/**
 		 * Check collisions on the Sprite objects
 		 */
-		synchronized (spriteList) {
-			for (Sprite spriteObj : spriteList) {
-				for (Sprite otherSprite : spriteList) {
+		synchronized (colisionList) {
+			for (Sprite spriteObj : colisionList) {
+				for (Sprite otherSprite : colisionList) {
 					if (!otherSprite.equals(spriteObj)) {
 						spriteObj.checkCollision(otherSprite);
 					}
@@ -154,20 +161,11 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		gameLevel.draw(offscreenGraphics);
 
 		/**
-		 * Draw the Sprite objects
+		 * Draw the Image objects
 		 */
-		synchronized (spriteList) {
-			for (Sprite spriteObj : spriteList) {
-				spriteObj.draw(offscreenGraphics);
-			}
-		}
-
-		/**
-		 * Draw the Sprite objects
-		 */
-		synchronized (spriteList) {
-			for (Sprite SpriteObj : spriteList) {
-				SpriteObj.draw(offscreenGraphics);
+		synchronized (drawList) {
+			for (Image imageObj : drawList) {
+				imageObj.draw(offscreenGraphics);
 			}
 		}
 		if (debug == true) {
@@ -183,9 +181,9 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 			 * Update the Sprite objects and Level
 			 */
 			gameLevel.update();
-			synchronized (spriteList) {
-				for (Sprite spriteObj : spriteList) {
-					spriteObj.update();
+			synchronized (drawList) {
+				for (Image imageObj : drawList) {
+					imageObj.update();
 				}
 			}
 			break;
@@ -198,26 +196,29 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		}
 		case STARTING: {
 			if (time == 0) {
-				time = System.nanoTime(); // TODO get system time from engine to
-											// save processing power!
+				System.out.println("Starting");
+				time = GameEngine.getCurrentTime(); // TODO get system time from
+													// engine
 			}
-			if (System.nanoTime() > time + (5 * 1000000000.0)) {
+			if (GameEngine.getCurrentTime() > time + (5 * 1000000000.0)) {
 				gameLevel = new Loading();
-				time = System.nanoTime();
+				time = GameEngine.getCurrentTime();
 			}
-			if (System.nanoTime() > time + (1 * 1000000000.0)) {
+			if (GameEngine.getCurrentTime() > time + (1 * 1000000000.0)) {
 				gameLevel = new MainMenu();
 				gameState = GameState.RUNNING;
-				time = System.nanoTime();
+				time = GameEngine.getCurrentTime();
 			}
 			break;
 		}
-		case RESTART:{
+		case RESTARTING: {
+			System.out.println("Restarting");
 			gameState = GameState.RUNNING;
 			GameEngine.stop();
 			break;
 		}
 		case ENDING: {
+			System.out.println("Stopping");
 			GameEngine.stop();
 			break;
 		}
@@ -236,7 +237,8 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 			if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {// TODO &&
 														// ke.getKeyCode() ==
 														// KeyEvent.VK_SHIFT
-				gameState = GameState.ENDING;
+				GameEventDispatcher.dispatchEvent(new GameEvent(this,
+						GameEventType.End, this));
 			}
 			// Pause or Run
 			if (ke.getKeyCode() == KeyEvent.VK_P) {
@@ -248,15 +250,15 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 			}
 			// Menu
 			if (ke.getKeyCode() == KeyEvent.VK_M) {
-				GameEventDispatcher.dispatchEvent(new GameEvent(this,GameEventType.End, this));
+				GameEventDispatcher.dispatchEvent(new GameEvent(this,
+						GameEventType.Menu, this));
 			}
 		}
-		gameLevel.keyboardEvent(ke);
 		/**
 		 * Send the keyboard event to each Sprite
 		 */
-		synchronized (spriteList) {
-			for (Sprite spriteObj : spriteList) {
+		synchronized (keyList) {
+			for (UI spriteObj : keyList) {
 				spriteObj.keyboardEvent(ke);
 			}
 		}
@@ -264,12 +266,11 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 
 	@Override
 	public void mouseEvent(MouseEvent me) {
-		gameLevel.mouseEvent(me);
 		/**
 		 * Send the mouse event to each Sprite
 		 */
-		synchronized (spriteList) {
-			for (Sprite spriteObj : spriteList) {
+		synchronized (keyList) {
+			for (UI spriteObj : keyList) {
 				spriteObj.mouseEvent(me);
 			}
 		}
@@ -279,76 +280,57 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	public synchronized void manageGameEvent(GameEvent ge) {
 		switch (ge.getType()) {
 		case AddFirst:
-			synchronized (spriteList) {
-				spriteList.addFirst((Sprite) ge.getAttachment());
-				break;
-			}
-
-		case AddLast:
-			synchronized (spriteList) {
-				spriteList.addLast((Sprite) ge.getAttachment());
-				break;
-			}
-
-		case Remove:
-			synchronized (spriteList) {
-				synchronized (spriteList) {
-					Sprite sprite = (Sprite) ge.getAttachment();
-					spriteList.remove(sprite);
-					break;
+			if (ge.getAttachment() instanceof Sprite)
+				synchronized (colisionList) {
+					colisionList.addFirst((Sprite) ge.getAttachment());
 				}
-			}
-
-			// case Score: {
-			// score += ((Integer) ge.getAttachment()).intValue();
-			// break;
-			// }
-		case EnemyDown: {
+			if (ge.getAttachment() instanceof Image)
+				synchronized (drawList) {
+					drawList.addFirst((Image) ge.getAttachment());
+				}
+			if (ge.getAttachment() instanceof UI)
+				synchronized (keyList) {
+					keyList.addFirst((UI) ge.getAttachment());
+				}
 			break;
-		}
-		case Start: // Save games
-		{
-			startType = ((Integer) ge.getAttachment()).intValue();
-			synchronized (spriteList) {
-				switch (startType) {
-				case 0: // New game
-				{
-					gameProgress = 1;
-					GameEventDispatcher.dispatchEvent(new GameEvent(this,
-							GameEventType.Load, this));
-					break;
+		case Remove:
+			if (ge.getAttachment() instanceof Sprite)
+				synchronized (colisionList) {
+					colisionList.remove((Sprite) ge.getAttachment());
 				}
-				case 1: // Load game
-				{
-					GameEventDispatcher.dispatchEvent(new GameEvent(this,
-							GameEventType.Load, this));
-					break;
+			if (ge.getAttachment() instanceof Image)
+				synchronized (drawList) {
+					drawList.remove((Image) ge.getAttachment());
 				}
-				case 2: // Help
-				{
-					break;
+			if (ge.getAttachment() instanceof UI)
+				synchronized (keyList) {
+					keyList.remove((UI) ge.getAttachment());
 				}
-				case 3: // Settings
-				{
-					gameState = GameState.RESTART;
-					break;
+			break;
+		case AddLast:
+			if (ge.getAttachment() instanceof Sprite)
+				synchronized (colisionList) {
+					colisionList.addLast((Sprite) ge.getAttachment());
 				}
-				case 4: // Exit
-				{
-					gameState = GameState.ENDING;
-					break;
+			if (ge.getAttachment() instanceof Image)
+				synchronized (drawList) {
+					drawList.addLast((Image) ge.getAttachment());
 				}
+			if (ge.getAttachment() instanceof UI)
+				synchronized (keyList) {
+					keyList.addLast((UI) ge.getAttachment());
 				}
-			}
+			break;
+		case EnemyDown: {
 			break;
 		}
 		case NextLevel: // change level before loading
 		{
-			gameProgress++;
+			gameProgress = gameProgress + 1;
 			break;
 		}
 		case Load: {
-			synchronized (spriteList) {
+			synchronized (colisionList) {
 				// Update the graphics once to get something on the screen
 				Graphics2D offscreenGraphics = (Graphics2D) GameDisplay
 						.getContext();
@@ -356,21 +338,40 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 				GameDisplay.update();
 
 				// Clear what was loaded
-				spriteList.clear();
+				clearLists();
 
 				// Load new level
 				Load(gameProgress);
-
 			}
 			break;
 		}
-		case End: {
-			synchronized (spriteList) {
-				gameProgress = 0;
-				spriteList.clear();
+		case Menu:
+			synchronized (drawList) {
+				// Update the graphics once to get something on the screen
+				Graphics2D offscreenGraphics = (Graphics2D) GameDisplay
+						.getContext();
+				offscreenGraphics.drawImage(loadingImage, null, 0, 0);
+				GameDisplay.update();
 
+				// Clear what was loaded
+				clearLists();
+
+				// Load new level
 				Load(0);
 			}
+			break;
+		case End: {
+			gameProgress = 0;
+			clearLists();
+			gameState = GameState.ENDING;
+			Load(0);
+			break;
+		}
+		case Restart: {
+			gameProgress = 0;
+			clearLists();
+			gameState = GameState.RESTARTING;
+			Load(0);
 			break;
 		}
 		default:
@@ -378,14 +379,28 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		}
 	}
 
-	public void debug(Graphics2D g) {
+	private void clearLists() {
+		synchronized (drawList) {
+			drawList.clear();
+		}
+		synchronized (colisionList) {
+			colisionList.clear();
+		}
+		synchronized (keyList) {
+			keyList.clear();
+		}
+	}
+
+	private void debug(Graphics2D g) {
 		// TODO
 		g.setFont(f1);
 		g.setColor(Color.RED);
-		g.drawString("Level: " + gameProgress, displayWidth - 100, 20);
-		g.drawString("State: " + gameState, displayWidth - 100, 30);
-		g.drawString("test2", displayWidth - 100, 40);
-		g.drawString("Ticks: " + GameEngine.getTicks() + " FPS: " + GameEngine.getFrames(), displayWidth - 100, 50);
+		g.drawString(GAME_NAME, displayWidth - 100, 20);
+		g.drawString("Level: " + gameProgress, displayWidth - 100, 30);
+		g.drawString("State: " + gameState, displayWidth - 100, 40);
+		g.drawString(
+				"Ticks: " + GameEngine.getTicks() + " FPS: "
+						+ GameEngine.getFrames(), displayWidth - 100, 50);
 	}
 
 	public void Load(int state) {
@@ -394,8 +409,6 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		{
 			gameLevel = new MainMenu();
 			// Load the Menu
-			GameEventDispatcher.dispatchEvent(new GameEvent(this,
-					GameEventType.Menu, this));
 			break;
 		}
 
@@ -422,14 +435,28 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 
 	public void LoadLevel(int level) {
 		// list of levels
-        switch ( level )
-        {
-        // add first
-            case 0: // level 0 -
-            {
-            	gameLevel = new Level01();
-            	break;
-            }
-        }
+		switch (level) {
+		// add first
+		case 0: // level 0 -
+		{
+			gameLevel = new Level01();
+			break;
+		}
+		}
+	}
+
+	/**
+	 * @return the gameProgress
+	 */
+	public static int getGameProgress() {
+		return gameProgress;
+	}
+
+	/**
+	 * @param gameProgress
+	 *            the gameProgress to set
+	 */
+	public static void setGameProgress(int gameProgress) {
+		Start.gameProgress = gameProgress;
 	}
 }
