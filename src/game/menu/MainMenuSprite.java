@@ -14,50 +14,18 @@ import engine.ImageUtil;
 import engine.sprite.UI;
 
 public class MainMenuSprite implements UI {
-	private final int MAX_SELECTIONS = 4;
+	private final int MAX_SELECTIONS = 5;
 	private final double MAX_SIZE = 40;
 	private final double MIN_SIZE = 30;
 
-	private enum Selected {
-		NEW(0), LOAD(1), HELP(2), SETTINGS(3), EXIT(4);
-
-		private int value;
-
-		private Selected(int value) {
-			this.value = value;
-		}
-
-		public int getValue() {
-			return value;
-		}
-
-		public Selected getNext() {
-			return values()[(ordinal() + 1) % values().length];
-			// return this.ordinal() < Selected.values().length - 1 ?
-			// Selected.values()[ this.ordinal() + 1 ] : null;
-		}
-
-		public Selected getPrev() {
-			return values()[(this.ordinal() + values().length - 1)
-					% values().length];
-		}
-	}
+	private int selected;
 
 	Dimension displayBounds;
-	private static int width0;
-	private static int width1;
-	private static int width2;
-	private static int width3;
-	private static int width4;
-	private static int height0;
-	private static int height1;
-	private static int height2;
-	private static int height3;
-	private static int height4;
 
 	private String[] element;
+	private int[] length;
+	private int[] height;
 
-	private Selected selected = Selected.NEW;
 	private Color color1 = Color.BLUE;
 	private Color color2 = Color.BLACK;
 	private Font f1;
@@ -72,7 +40,10 @@ public class MainMenuSprite implements UI {
 	boolean done;
 
 	public MainMenuSprite() {
-		element = new String[6];
+		element = new String[MAX_SELECTIONS];
+		length = new int[MAX_SELECTIONS];
+		height = new int[MAX_SELECTIONS];
+
 		element[0] = "Continue Game";
 		element[1] = "New Game";
 		element[2] = "Help";
@@ -87,12 +58,10 @@ public class MainMenuSprite implements UI {
 		f2 = new Font("Times New Roman", Font.BOLD, (int) MAX_SIZE);
 
 		try {
-			backgroundImage = ImageUtil.loadBufferedImage(this,
-					"/Backgrounds/Menu.png");
+			backgroundImage = ImageUtil.loadBufferedImage(this,"/Backgrounds/Menu.png");
 		} catch (IOException e) {
 			System.out.println("Menu Image Not Loaded");
 		}
-
 	}
 
 	@Override
@@ -102,13 +71,12 @@ public class MainMenuSprite implements UI {
 					displayBounds.height, null);
 		}
 
-		for (int i = 0; i < element.length; i++) {
+		for (int i = 0; i < MAX_SELECTIONS; i++) {
 			setText(g, i);
-			g.drawString(
-					element[i],
-					((displayBounds.width - g.getFontMetrics().stringWidth(element[i])) / 2),
-					(int) (((i / (float) element.length) * (0.9) * displayBounds.height) + (displayBounds.height * 0.075)));
-
+			length[i] = ((displayBounds.width - g.getFontMetrics().stringWidth(
+					element[i])) / 2);
+			height[i] = (int) (((i / (float) element.length) * (0.9) * displayBounds.height) + (displayBounds.height * 0.075));
+			g.drawString(element[i], length[i], height[i]);
 		}
 	}
 
@@ -116,18 +84,18 @@ public class MainMenuSprite implements UI {
 	public void update() {
 		// move the selected value to the next one
 		if (down == true) {
-			if (selected.getValue() < MAX_SELECTIONS) {
-				selected = selected.getNext();
+			if (selected < MAX_SELECTIONS) {
+				selected = selected++;
 			} else {
-				selected = Selected.NEW;
+				selected = 0;
 			}
 			down = false;
 		}
 		if (up == true) {
-			if (selected.getValue() > 0) {
-				selected = selected.getPrev();
+			if (selected > 0) {
+				selected = selected--;
 			} else {
-				selected = Selected.EXIT;
+				selected = MAX_SELECTIONS;
 			}
 			up = false;
 		}
@@ -172,26 +140,20 @@ public class MainMenuSprite implements UI {
 	}
 
 	public int getSelectedValue() {
-		return (selected.getValue());
+		return (selected);
 	}
 
 	private void mouseSelect() {
 
-		if ((mouseY > height0 - MAX_SIZE) && (mouseY < height0 + MAX_SIZE))
-			selected = Selected.NEW;
-		if ((mouseY > height1 - MAX_SIZE) && (mouseY < height1 + MAX_SIZE))
-			selected = Selected.LOAD;
-		if ((mouseY > height2 - MAX_SIZE) && (mouseY < height2 + MAX_SIZE))
-			selected = Selected.HELP;
-		if ((mouseY > height3 - MAX_SIZE) && (mouseY < height3 + MAX_SIZE))
-			selected = Selected.SETTINGS;
-		if ((mouseY > height4 - MAX_SIZE) && (mouseY < height4 + MAX_SIZE))
-			selected = Selected.EXIT;
-
+		for (int i = 0; i < element.length; i++) {
+			if ((mouseY > height[i] - MAX_SIZE)
+					&& (mouseY < height[i] + MAX_SIZE))
+				selected = i;
+		}
 	}
 
 	void setText(Graphics2D g, int val) {
-		if (selected.getValue() == val) {
+		if (selected == val) {
 			g.setFont(f2);
 			g.setColor(color2);
 		} else {

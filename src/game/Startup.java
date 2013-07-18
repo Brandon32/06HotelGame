@@ -4,16 +4,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import engine.GameDisplay;
 import engine.ImageUtil;
-import engine.sprite.UI;
+import engine.sprite.Level;
 
-public class Startup implements UI {
+public class Startup implements Level {
 	
 	private BufferedImage backgroundImage;
 	private Dimension displayBounds;
@@ -41,18 +39,6 @@ public class Startup implements UI {
 		g.setColor(Color.RED);
 		g.drawString("Cyber Penguin (c) 2013", displayBounds.width / 2, displayBounds.height - 20);
     	g.drawImage(backgroundImage, 0, 0, displayBounds.width, displayBounds.height, null);
-	}
-
-	@Override
-	public void keyboardEvent(KeyEvent ke) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void mouseEvent(MouseEvent me) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

@@ -5,7 +5,7 @@ import java.awt.Rectangle;
 /**
  * Sprite class
  * 
- * @author williamhooper
+ * @author Brandon Marshall
  */
 public interface Sprite extends Image
 {

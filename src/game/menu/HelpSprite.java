@@ -9,47 +9,11 @@ import engine.sprite.UI;
 
 public class HelpSprite extends MainMenuSprite implements UI {
 
-	private enum Selected {
-		NEW(0), LOAD(1), HELP(2), SETTINGS(3), EXIT(4);
-
-		private int value;
-
-		private Selected(int value) {
-			this.value = value;
-		}
-
-		public int getValue() {
-			return value;
-		}
-
-		public Selected getNext() {
-			return values()[(ordinal() + 1) % values().length];
-			// return this.ordinal() < Selected.values().length - 1 ?
-			// Selected.values()[ this.ordinal() + 1 ] : null;
-		}
-
-		public Selected getPrev() {
-			return values()[(this.ordinal() + values().length - 1)
-					% values().length];
-		}
-	}
-
-	
 	private boolean done;
-	private Selected selected = Selected.NEW;
+	private int selected;
 	private Image backgroundImage;
 	
-	private static int width0;
-	private static int width1;
-	private static int width2;
-	private static int width3;
-	private static int width4;
-	private static int height0;
-	private static int height1;
-	private static int height2;
-	private static int height3;
-	private static int height4;
-	
+
 	private String loadGame;
 	private String newGame;
 	private String help;

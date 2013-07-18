@@ -55,6 +55,10 @@ public class SettingsSprite extends MainMenuSprite implements UI {
 	private String settings;
 	private String exit;
 	
+	public SettingsSprite(){
+		
+	}
+	
 	@Override
 	public void draw(Graphics2D g) {
 		if (backgroundImage != null) {

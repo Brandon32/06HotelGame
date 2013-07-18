@@ -1,15 +1,13 @@
 package game;
 
 import java.awt.Graphics2D;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import engine.ImageUtil;
-import engine.sprite.UI;
+import engine.sprite.Level;
 
-public class Loading implements UI {
+public class Loading implements Level{
 	
 	private BufferedImage backgroundImage;
 
@@ -31,18 +29,6 @@ public class Loading implements UI {
 	@Override
 	public void draw(Graphics2D g) {
     	g.drawImage(backgroundImage, null, 0, 0);		
-	}
-
-	@Override
-	public void keyboardEvent(KeyEvent ke) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEvent(MouseEvent me) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

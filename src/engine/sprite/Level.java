@@ -7,7 +7,7 @@ import java.awt.Graphics2D;
  * 
  * @author Brandon Marshall
  */
-public interface Image
+public interface Level
 {
     /**
      * Update the sprite's state.

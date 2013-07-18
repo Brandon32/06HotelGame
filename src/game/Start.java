@@ -21,6 +21,7 @@ import engine.event.GameEventDispatcher;
 import engine.event.GameEventKeyboard;
 import engine.event.GameEventMouse;
 import engine.sprite.Image;
+import engine.sprite.Level;
 import engine.sprite.Sprite;
 import engine.sprite.UI;
 import game.levels.Level01;
@@ -41,7 +42,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	private LinkedList<Sprite> colisionList;
 	private LinkedList<Image> drawList;
 	private LinkedList<UI> keyList;
-	private Image gameLevel;
+	private Level gameLevel;
 
 	private BufferedImage loadingImage;
 	private BufferedImage icon;
