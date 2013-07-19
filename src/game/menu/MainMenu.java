@@ -10,11 +10,15 @@ import game.Start;
 
 public class MainMenu implements Level {
 	private MainMenuSprite menu;
+	private SettingsSprite settings;
+	private HelpSprite help;
 
 	public MainMenu() {
 		menu = new MainMenuSprite();
 		GameEventDispatcher.dispatchEvent(new GameEvent(this,
 				GameEventType.AddLast, menu));
+		settings = new SettingsSprite();
+		help = new HelpSprite();
 	}
 
 	@Override
@@ -44,10 +48,20 @@ public class MainMenu implements Level {
 					GameEventType.Load, this));
 			break;
 		case 2:// HELP(2)
-			menu = new HelpSprite();
+			GameEventDispatcher.dispatchEvent(new GameEvent(this,
+					GameEventType.Remove, menu));
+			GameEventDispatcher.dispatchEvent(new GameEvent(this,
+					GameEventType.Remove, settings));
+			GameEventDispatcher.dispatchEvent(new GameEvent(this,
+					GameEventType.AddLast, help));
 			break;
 		case 3:// SETTINGS(3)
-			menu = new SettingsSprite();
+			GameEventDispatcher.dispatchEvent(new GameEvent(this,
+					GameEventType.Remove, menu));
+			GameEventDispatcher.dispatchEvent(new GameEvent(this,
+					GameEventType.Remove, help));
+			GameEventDispatcher.dispatchEvent(new GameEvent(this,
+					GameEventType.AddLast, settings));
 			break;
 		case 4:// END(4)
 			GameEventDispatcher.dispatchEvent(new GameEvent(this,
@@ -58,7 +72,12 @@ public class MainMenu implements Level {
 					GameEventType.Restart, this));
 			break;
 		case 6:// MENU(6)
-			menu = new MainMenuSprite();
+			GameEventDispatcher.dispatchEvent(new GameEvent(this,
+					GameEventType.Remove, help));
+			GameEventDispatcher.dispatchEvent(new GameEvent(this,
+					GameEventType.Remove, settings));
+			GameEventDispatcher.dispatchEvent(new GameEvent(this,
+					GameEventType.AddLast, menu));
 			break;
 		}
 	}

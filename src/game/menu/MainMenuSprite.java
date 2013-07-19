@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -66,6 +67,11 @@ public class MainMenuSprite implements UI {
 
 	@Override
 	public void draw(Graphics2D g) {
+		RenderingHints rh = new RenderingHints(
+	            RenderingHints.KEY_TEXT_ANTIALIASING,
+	            RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
+	    g.setRenderingHints(rh);
+		
 		if (backgroundImage != null) {
 			g.drawImage(backgroundImage, 0, 0, displayBounds.width,
 					displayBounds.height, null);

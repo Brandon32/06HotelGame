@@ -20,6 +20,17 @@ public class HelpSprite extends MainMenuSprite implements UI {
 	private String settings;
 	private String exit;
 	
+	private static int width0;
+	private static int width1;
+	private static int width2;
+	private static int width3;
+	private static int width4;
+	private static int height0;
+	private static int height1;
+	private static int height2;
+	private static int height3;
+	private static int height4;
+	
 	public HelpSprite(){
 		
 	}
@@ -68,7 +79,7 @@ public class HelpSprite extends MainMenuSprite implements UI {
 	}
 
 	public int getSelectedValue() {
-		return (selected.getValue());
+		return (selected);
 	}
 
 }
