@@ -1,5 +1,9 @@
 package game;
 
+import engine.GameDisplay;
+import engine.ImageUtil;
+import game.levels.LevelSuper;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -7,11 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import engine.GameDisplay;
-import engine.ImageUtil;
-import engine.interfaces.LevelInterface;
-
-public class Startup implements LevelInterface {
+public class Startup  extends LevelSuper{
 	
 	private BufferedImage backgroundImage;
 	private Dimension displayBounds;

@@ -1,19 +1,19 @@
 package game.levels;
 
-import java.awt.Graphics2D;
-
 import engine.events.GameEvent;
-import engine.events.GameEventDispatcher;
 import engine.events.GameEvent.GameEventType;
-import engine.interfaces.LevelInterface;
+import engine.events.GameEventDispatcher;
 import game.sprite.Mech;
 
-public class Level01 implements LevelInterface {
+import java.awt.Graphics2D;
+
+public class Level01 extends LevelSuper {
 	private Mech myMech;
 
 	public Level01() {
 		myMech = new Mech();
-		GameEventDispatcher.dispatchEvent(new GameEvent(this,GameEventType.AddFirst, myMech));
+		GameEventDispatcher.dispatchEvent(new GameEvent(this,
+				GameEventType.AddFirst, myMech));
 	}
 
 	@Override

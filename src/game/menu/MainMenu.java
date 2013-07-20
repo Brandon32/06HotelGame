@@ -1,14 +1,14 @@
 package game.menu;
 
+import engine.events.GameEvent;
+import engine.events.GameEvent.GameEventType;
+import engine.events.GameEventDispatcher;
+import game.Start;
+import game.levels.LevelSuper;
+
 import java.awt.Graphics2D;
 
-import engine.events.GameEvent;
-import engine.events.GameEventDispatcher;
-import engine.events.GameEvent.GameEventType;
-import engine.interfaces.LevelInterface;
-import game.Start;
-
-public class MainMenu implements LevelInterface {
+public class MainMenu extends LevelSuper {
 	private MainMenuSprite menu;
 	private SettingsSprite settings;
 	private HelpSprite help;
@@ -23,8 +23,8 @@ public class MainMenu implements LevelInterface {
 
 	@Override
 	public void update() {
-		
-		if(menu.isDone()){
+
+		if (menu.isDone()) {
 			change(menu.getSelectedValue());
 		}
 
