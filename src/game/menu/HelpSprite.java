@@ -5,9 +5,9 @@ import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-import engine.sprite.UI;
+import engine.interfaces.UIInterface;
 
-public class HelpSprite extends MainMenuSprite implements UI {
+public class HelpSprite extends MainMenuSprite implements UIInterface {
 
 	private boolean done;
 	private int selected;

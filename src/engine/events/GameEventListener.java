@@ -1,4 +1,4 @@
-package engine.event;
+package engine.events;
 
 /**
  * Game event listener

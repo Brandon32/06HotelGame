@@ -2,9 +2,9 @@ package engine;
 
 import java.util.LinkedList;
 
-import engine.event.GameEvent;
-import engine.event.GameEventDispatcher;
-import engine.event.GameEventListener;
+import engine.events.GameEvent;
+import engine.events.GameEventDispatcher;
+import engine.events.GameEventListener;
 
 
 /**

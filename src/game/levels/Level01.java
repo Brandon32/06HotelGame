@@ -2,13 +2,13 @@ package game.levels;
 
 import java.awt.Graphics2D;
 
-import engine.event.GameEvent;
-import engine.event.GameEvent.GameEventType;
-import engine.event.GameEventDispatcher;
-import engine.sprite.Level;
+import engine.events.GameEvent;
+import engine.events.GameEventDispatcher;
+import engine.events.GameEvent.GameEventType;
+import engine.interfaces.LevelInterface;
 import game.sprite.Mech;
 
-public class Level01 implements Level {
+public class Level01 implements LevelInterface {
 	private Mech myMech;
 
 	public Level01() {

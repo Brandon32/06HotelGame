@@ -1,4 +1,4 @@
-package engine.event;
+package engine.events;
 
 /**
  * An abstract adapter class for receiving game events. The methods in this class are empty. This class exists as convenience for

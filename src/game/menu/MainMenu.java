@@ -2,13 +2,13 @@ package game.menu;
 
 import java.awt.Graphics2D;
 
-import engine.event.GameEvent;
-import engine.event.GameEvent.GameEventType;
-import engine.event.GameEventDispatcher;
-import engine.sprite.Level;
+import engine.events.GameEvent;
+import engine.events.GameEventDispatcher;
+import engine.events.GameEvent.GameEventType;
+import engine.interfaces.LevelInterface;
 import game.Start;
 
-public class MainMenu implements Level {
+public class MainMenu implements LevelInterface {
 	private MainMenuSprite menu;
 	private SettingsSprite settings;
 	private HelpSprite help;

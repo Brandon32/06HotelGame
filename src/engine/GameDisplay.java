@@ -21,8 +21,8 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import engine.event.GameEventKeyboard;
-import engine.event.GameEventMouse;
+import engine.events.GameEventKeyboard;
+import engine.events.GameEventMouse;
 
 
 /**

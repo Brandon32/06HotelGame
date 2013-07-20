@@ -1,4 +1,4 @@
-package engine.sprite;
+package engine.interfaces;
 
 import java.awt.Rectangle;
 
@@ -7,7 +7,7 @@ import java.awt.Rectangle;
  * 
  * @author Brandon Marshall
  */
-public interface Sprite extends Image
+public interface SpriteInterface extends ImageInterface
 {
 
 	/**
@@ -15,7 +15,7 @@ public interface Sprite extends Image
      * 
      * @param obj
      */
-    public abstract void checkCollision( Sprite obj );
+    public abstract void checkCollision( SpriteInterface obj );
 
     /**
      * Check to see if the passed bounding box intersects with our bounding box.

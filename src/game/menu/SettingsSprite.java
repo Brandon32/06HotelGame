@@ -5,9 +5,9 @@ import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-import engine.sprite.UI;
+import engine.interfaces.UIInterface;
 
-public class SettingsSprite extends MainMenuSprite implements UI {
+public class SettingsSprite extends MainMenuSprite implements UIInterface {
 
 	private enum Selected {
 		NEW(0), LOAD(1), HELP(2), SETTINGS(3), EXIT(4);

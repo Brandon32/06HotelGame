@@ -1,4 +1,4 @@
-package engine.event;
+package engine.events;
 
 /**
  * Game event class. Used to pass async messages back to the main

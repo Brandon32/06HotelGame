@@ -1,4 +1,4 @@
-package engine.sprite;
+package engine.interfaces;
 
 /**
  * Abstract class for a sprite pool object

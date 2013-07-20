@@ -1,4 +1,4 @@
-package engine.sprite;
+package engine.interfaces;
 
 import java.util.LinkedList;
 

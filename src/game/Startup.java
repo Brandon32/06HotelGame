@@ -9,9 +9,9 @@ import java.io.IOException;
 
 import engine.GameDisplay;
 import engine.ImageUtil;
-import engine.sprite.Level;
+import engine.interfaces.LevelInterface;
 
-public class Startup implements Level {
+public class Startup implements LevelInterface {
 	
 	private BufferedImage backgroundImage;
 	private Dimension displayBounds;

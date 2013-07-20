@@ -12,9 +12,9 @@ import java.io.IOException;
 
 import engine.GameDisplay;
 import engine.ImageUtil;
-import engine.sprite.UI;
+import engine.interfaces.UIInterface;
 
-public class MainMenuSprite implements UI {
+public class MainMenuSprite implements UIInterface {
 	private final int MAX_SELECTIONS = 5;
 	private final double MAX_SIZE = 40;
 	private final double MIN_SIZE = 30;

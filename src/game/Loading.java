@@ -5,9 +5,9 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import engine.ImageUtil;
-import engine.sprite.Level;
+import engine.interfaces.LevelInterface;
 
-public class Loading implements Level{
+public class Loading implements LevelInterface{
 	
 	private BufferedImage backgroundImage;
 

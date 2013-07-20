@@ -15,15 +15,15 @@ import engine.Game;
 import engine.GameDisplay;
 import engine.GameEngine;
 import engine.ImageUtil;
-import engine.event.GameEvent;
-import engine.event.GameEvent.GameEventType;
-import engine.event.GameEventDispatcher;
-import engine.event.GameEventKeyboard;
-import engine.event.GameEventMouse;
-import engine.sprite.Image;
-import engine.sprite.Level;
-import engine.sprite.Sprite;
-import engine.sprite.UI;
+import engine.events.GameEvent;
+import engine.events.GameEventDispatcher;
+import engine.events.GameEventKeyboard;
+import engine.events.GameEventMouse;
+import engine.events.GameEvent.GameEventType;
+import engine.interfaces.ImageInterface;
+import engine.interfaces.LevelInterface;
+import engine.interfaces.SpriteInterface;
+import engine.interfaces.UIInterface;
 import game.levels.Level01;
 import game.menu.MainMenu;
 
@@ -39,10 +39,10 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	private static int gameProgress = 0;
 	private static Boolean debug = true; // switch to false on release
 
-	private LinkedList<Sprite> colisionList;
-	private LinkedList<Image> drawList;
-	private LinkedList<UI> keyList;
-	private Level gameLevel;
+	private LinkedList<SpriteInterface> colisionList;
+	private LinkedList<ImageInterface> drawList;
+	private LinkedList<UIInterface> keyList;
+	private LevelInterface gameLevel;
 
 	private BufferedImage loadingImage;
 	private BufferedImage icon;
@@ -98,9 +98,9 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		 * Create our list of sprites
 		 */
 
-		colisionList = new LinkedList<Sprite>();
-		drawList = new LinkedList<Image>();
-		keyList = new LinkedList<UI>();
+		colisionList = new LinkedList<SpriteInterface>();
+		drawList = new LinkedList<ImageInterface>();
+		keyList = new LinkedList<UIInterface>();
 
 		/**
 		 * Add a mouse listener so we can get mouse events
@@ -132,8 +132,8 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		 * Check collisions on the Sprite objects
 		 */
 		synchronized (colisionList) {
-			for (Sprite spriteObj : colisionList) {
-				for (Sprite otherSprite : colisionList) {
+			for (SpriteInterface spriteObj : colisionList) {
+				for (SpriteInterface otherSprite : colisionList) {
 					if (!otherSprite.equals(spriteObj)) {
 						spriteObj.checkCollision(otherSprite);
 					}
@@ -168,7 +168,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		 * Draw the Image objects
 		 */
 		synchronized (drawList) {
-			for (Image imageObj : drawList) {
+			for (ImageInterface imageObj : drawList) {
 				imageObj.draw(offscreenGraphics);
 			}
 		}
@@ -186,7 +186,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 			 */
 			gameLevel.update();
 			synchronized (drawList) {
-				for (Image imageObj : drawList) {
+				for (ImageInterface imageObj : drawList) {
 					imageObj.update();
 				}
 			}
@@ -262,7 +262,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		 * Send the keyboard event to each Sprite
 		 */
 		synchronized (keyList) {
-			for (UI spriteObj : keyList) {
+			for (UIInterface spriteObj : keyList) {
 				spriteObj.keyboardEvent(ke);
 			}
 		}
@@ -274,7 +274,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		 * Send the mouse event to each Sprite
 		 */
 		synchronized (keyList) {
-			for (UI spriteObj : keyList) {
+			for (UIInterface spriteObj : keyList) {
 				spriteObj.mouseEvent(me);
 			}
 		}
@@ -284,45 +284,45 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	public synchronized void manageGameEvent(GameEvent ge) {
 		switch (ge.getType()) {
 		case AddFirst:
-			if (ge.getAttachment() instanceof Sprite)
+			if (ge.getAttachment() instanceof SpriteInterface)
 				synchronized (colisionList) {
-					colisionList.addFirst((Sprite) ge.getAttachment());
+					colisionList.addFirst((SpriteInterface) ge.getAttachment());
 				}
-			if (ge.getAttachment() instanceof Image)
+			if (ge.getAttachment() instanceof ImageInterface)
 				synchronized (drawList) {
-					drawList.addFirst((Image) ge.getAttachment());
+					drawList.addFirst((ImageInterface) ge.getAttachment());
 				}
-			if (ge.getAttachment() instanceof UI)
+			if (ge.getAttachment() instanceof UIInterface)
 				synchronized (keyList) {
-					keyList.addFirst((UI) ge.getAttachment());
+					keyList.addFirst((UIInterface) ge.getAttachment());
 				}
 			break;
 		case Remove:
-			if (ge.getAttachment() instanceof Sprite)
+			if (ge.getAttachment() instanceof SpriteInterface)
 				synchronized (colisionList) {
-					colisionList.remove((Sprite) ge.getAttachment());
+					colisionList.remove((SpriteInterface) ge.getAttachment());
 				}
-			if (ge.getAttachment() instanceof Image)
+			if (ge.getAttachment() instanceof ImageInterface)
 				synchronized (drawList) {
-					drawList.remove((Image) ge.getAttachment());
+					drawList.remove((ImageInterface) ge.getAttachment());
 				}
-			if (ge.getAttachment() instanceof UI)
+			if (ge.getAttachment() instanceof UIInterface)
 				synchronized (keyList) {
-					keyList.remove((UI) ge.getAttachment());
+					keyList.remove((UIInterface) ge.getAttachment());
 				}
 			break;
 		case AddLast:
-			if (ge.getAttachment() instanceof Sprite)
+			if (ge.getAttachment() instanceof SpriteInterface)
 				synchronized (colisionList) {
-					colisionList.addLast((Sprite) ge.getAttachment());
+					colisionList.addLast((SpriteInterface) ge.getAttachment());
 				}
-			if (ge.getAttachment() instanceof Image)
+			if (ge.getAttachment() instanceof ImageInterface)
 				synchronized (drawList) {
-					drawList.addLast((Image) ge.getAttachment());
+					drawList.addLast((ImageInterface) ge.getAttachment());
 				}
-			if (ge.getAttachment() instanceof UI)
+			if (ge.getAttachment() instanceof UIInterface)
 				synchronized (keyList) {
-					keyList.addLast((UI) ge.getAttachment());
+					keyList.addLast((UIInterface) ge.getAttachment());
 				}
 			break;
 		case EnemyDown: {

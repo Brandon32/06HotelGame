@@ -1,9 +1,9 @@
-package engine.sprite;
+package engine.interfaces;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-public interface UI extends Image
+public interface UIInterface extends ImageInterface
 {
     /**
      * Receive a keyboard event.

@@ -1,4 +1,4 @@
-package engine.event;
+package engine.events;
 
 import java.awt.event.MouseEvent;
 

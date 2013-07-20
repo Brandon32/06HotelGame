@@ -1,4 +1,4 @@
-package engine.sprite;
+package engine.interfaces;
 
 import java.awt.Graphics2D;
 
@@ -7,7 +7,7 @@ import java.awt.Graphics2D;
  * 
  * @author Brandon Marshall
  */
-public interface Image
+public interface ImageInterface
 {
     /**
      * Update the sprite's state.
