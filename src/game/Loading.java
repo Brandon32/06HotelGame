@@ -1,20 +1,20 @@
 package game;
 
-import engine.ImageUtil;
-import game.levels.LevelSuper;
-
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class Loading extends LevelSuper{
-	
+import engine.ImageUtil;
+
+public class Loading extends LevelSuper {
+
 	private BufferedImage backgroundImage;
 
-	public Loading()
-	{
+	public Loading() {
+		super();
 		try {
-			backgroundImage = ImageUtil.loadBufferedImage( this, "/Backgrounds/Loading.png" );
+			backgroundImage = ImageUtil.loadBufferedImage(this,
+					"/Backgrounds/Loading.png");
 		} catch (IOException e) {
 			System.out.println("Loading Image Not Loaded");
 		}
@@ -22,13 +22,14 @@ public class Loading extends LevelSuper{
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
-		
+		super.update();
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-    	g.drawImage(backgroundImage, null, 0, 0);		
+		super.draw(g);
+		if (backgroundImage != null)
+			g.drawImage(backgroundImage, null, 0, 0);
 	}
 
 }

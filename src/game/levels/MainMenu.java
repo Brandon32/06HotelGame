@@ -1,10 +1,13 @@
-package game.menu;
+package game.levels;
 
 import engine.events.GameEvent;
 import engine.events.GameEvent.GameEventType;
 import engine.events.GameEventDispatcher;
+import game.LevelSuper;
 import game.Start;
-import game.levels.LevelSuper;
+import game.menu.HelpSprite;
+import game.menu.MainMenuSprite;
+import game.menu.SettingsSprite;
 
 import java.awt.Graphics2D;
 
@@ -14,6 +17,7 @@ public class MainMenu extends LevelSuper {
 	private HelpSprite help;
 
 	public MainMenu() {
+		super();
 		menu = new MainMenuSprite();
 		GameEventDispatcher.dispatchEvent(new GameEvent(this,
 				GameEventType.AddLast, menu));
@@ -23,17 +27,15 @@ public class MainMenu extends LevelSuper {
 
 	@Override
 	public void update() {
-
+		super.update();
 		if (menu.isDone()) {
 			change(menu.getSelectedValue());
 		}
-
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		// TODO Auto-generated method stub
-
+		super.draw(g);
 	}
 
 	private void change(int selected) {

@@ -29,7 +29,7 @@ public interface LevelInterface
      * 
      * @param obj
      */
-    public abstract void checkCollision( SpriteInterface obj );
+    public abstract void checkCollision();
 
     /**
      * Receive a keyboard event.
@@ -44,5 +44,13 @@ public interface LevelInterface
      * @param me
      */
     public abstract void mouseEvent( MouseEvent me );
+
+	public abstract void clearLists();
+
+	public abstract void addFirst(ImageInterface attachment);
+
+	public abstract void remove(ImageInterface attachment);
+
+	public abstract void addLast(ImageInterface attachment);
     
 }

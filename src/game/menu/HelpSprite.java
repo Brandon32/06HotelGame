@@ -1,13 +1,19 @@
 package game.menu;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 
+import engine.GameDisplay;
+import engine.ImageUtil;
 import engine.interfaces.UIInterface;
 
-public class HelpSprite extends MainMenuSprite implements UIInterface {
+public class HelpSprite implements UIInterface {
 
 	private boolean done;
 	private int selected;
@@ -19,6 +25,7 @@ public class HelpSprite extends MainMenuSprite implements UIInterface {
 	private String help;
 	private String settings;
 	private String exit;
+	private Dimension displayBounds;
 	
 	private static int width0;
 	private static int width1;
@@ -31,8 +38,22 @@ public class HelpSprite extends MainMenuSprite implements UIInterface {
 	private static int height3;
 	private static int height4;
 	
+	private final double MAX_SIZE = 40;
+	private final double MIN_SIZE = 30;
+	private Font f1;
+	private Font f2;
+	private Color color1 = Color.BLUE;
+	private Color color2 = Color.BLACK;
+	
 	public HelpSprite(){
-		
+		displayBounds = GameDisplay.getBounds();
+		f1 = new Font("Times New Roman", Font.BOLD, (int) MIN_SIZE);
+		f2 = new Font("Times New Roman", Font.BOLD, (int) MAX_SIZE);
+		try {
+			backgroundImage = ImageUtil.loadBufferedImage(this,"/Backgrounds/Help.png");
+		} catch (IOException e) {
+			System.out.println("Help Image Not Loaded");
+		}
 	}
 	
 	@Override
@@ -80,6 +101,22 @@ public class HelpSprite extends MainMenuSprite implements UIInterface {
 
 	public int getSelectedValue() {
 		return (selected);
+	}
+
+	@Override
+	public void update() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	void setText(Graphics2D g, int val) {
+		if (selected == val) {
+			g.setFont(f2);
+			g.setColor(color2);
+		} else {
+			g.setFont(f1);
+			g.setColor(color1);
+		}
 	}
 
 }
