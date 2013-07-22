@@ -4,9 +4,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import engine.GameDisplay;
@@ -15,87 +16,130 @@ import engine.interfaces.UIInterface;
 
 public class SettingsSprite implements UIInterface {
 
-	private int selected;
-
-	private boolean done;
-	private Image backgroundImage;
-
-	private static int width0;
-	private static int width1;
-	private static int width2;
-	private static int width3;
-	private static int width4;
-	private static int height0;
-	private static int height1;
-	private static int height2;
-	private static int height3;
-	private static int height4;
-	
-	private String loadGame;
-	private String newGame;
-	private String help;
-	private String settings;
-	private String exit;
-
-	private Dimension displayBounds;
-	
+	private final int MAX_SELECTIONS = 5;
 	private final double MAX_SIZE = 40;
 	private final double MIN_SIZE = 30;
-	private Font f1;
-	private Font f2;
+
+	private int selected;
+
+	Dimension displayBounds;
+
+	private String[] element;
+	private int[] length;
+	private int[] height;
+
 	private Color color1 = Color.BLUE;
 	private Color color2 = Color.BLACK;
+	private Font f1;
+	private Font f2;
 
-	public SettingsSprite(){
+	private BufferedImage backgroundImage;
+
+	boolean down;
+	boolean up;
+	int mouseX;
+	int mouseY;
+	boolean done;
+
+	public SettingsSprite() {
+		element = new String[MAX_SELECTIONS];
+		length = new int[MAX_SELECTIONS];
+		height = new int[MAX_SELECTIONS];
+
+		element[0] = "Continue Game";
+		element[1] = "New Game";
+		element[2] = "Help";
+		element[3] = "Settings";
+		element[4] = "Exit Game";
+
 		displayBounds = GameDisplay.getBounds();
+
+		down = false;
+		up = false;
 		f1 = new Font("Times New Roman", Font.BOLD, (int) MIN_SIZE);
 		f2 = new Font("Times New Roman", Font.BOLD, (int) MAX_SIZE);
 
 		try {
-			backgroundImage = ImageUtil.loadBufferedImage(this,"/Backgrounds/Settings.png");
+			backgroundImage = ImageUtil.loadBufferedImage(this,"/Backgrounds/Menu.png");
 		} catch (IOException e) {
 			System.out.println("Settings Image Not Loaded");
 		}
-		
 	}
-	
+
 	@Override
 	public void draw(Graphics2D g) {
+		RenderingHints rh = new RenderingHints(
+	            RenderingHints.KEY_TEXT_ANTIALIASING,
+	            RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
+	    g.setRenderingHints(rh);
+		
 		if (backgroundImage != null) {
 			g.drawImage(backgroundImage, 0, 0, displayBounds.width,
 					displayBounds.height, null);
 		}
 
-		setText(g, 0);
-		width0 = ((displayBounds.width - g.getFontMetrics()
-				.stringWidth(newGame)) / 2);
-		g.drawString(newGame, width0, height0);
-		setText(g, 1);
-		width1 = ((displayBounds.width - g.getFontMetrics().stringWidth(
-				loadGame)) / 2);
-		g.drawString(loadGame, width1, height1);
-		setText(g, 2);
-		width2 = ((displayBounds.width - g.getFontMetrics().stringWidth(help)) / 2);
-		g.drawString(help, width2, height2);
-		setText(g, 3);
-		width3 = ((displayBounds.width - g.getFontMetrics().stringWidth(
-				settings)) / 2);
-		g.drawString(settings, width3, height3);
-		setText(g, 4);
-		width4 = ((displayBounds.width - g.getFontMetrics().stringWidth(exit)) / 2);
-		g.drawString(exit, width4, height4);
+		for (int i = 0; i < MAX_SELECTIONS; i++) {
+			setText(g, i);
+			length[i] = ((displayBounds.width - g.getFontMetrics().stringWidth(
+					element[i])) / 2);
+			height[i] = (int) (((i / (float) element.length) * (0.9) * displayBounds.height) + (displayBounds.height * 0.075));
+			g.drawString(element[i], length[i], height[i]);
+		}
+	}
+
+	@Override
+	public void update() {
+		// move the selected value to the next one
+		if (down == true) {
+			if (selected < MAX_SELECTIONS) {
+				selected++;
+			} else {
+				selected = 0;
+			}
+			down = false;
+		}
+		if (up == true) {
+			if (selected > 0) {
+				selected--;
+			} else {
+				selected = MAX_SELECTIONS;
+			}
+			up = false;
+		}
 	}
 
 	@Override
 	public void keyboardEvent(KeyEvent ke) {
-		// TODO Auto-generated method stub
-
+		if (ke.getID() == KeyEvent.KEY_PRESSED) {
+			if (ke.getKeyCode() == KeyEvent.VK_W
+					|| ke.getKeyCode() == KeyEvent.VK_UP) // UP
+			{
+				up = true;
+			}
+			if (ke.getKeyCode() == KeyEvent.VK_S
+					|| ke.getKeyCode() == KeyEvent.VK_DOWN) // DOWN
+			{
+				down = true;
+			}
+			if (ke.getKeyCode() == KeyEvent.VK_ENTER) {
+				done = true;
+			}
+		}
 	}
 
 	@Override
 	public void mouseEvent(MouseEvent me) {
-		// TODO Auto-generated method stub
-
+		if (mouseX != me.getX()) {
+			mouseX = me.getX();
+			mouseSelect();
+		}
+		if (mouseY != me.getY()) {
+			mouseY = me.getY();
+			mouseSelect();
+		}
+		if (me.getButton() == MouseEvent.BUTTON1) {
+			done = true;
+		}
 	}
 
 	public boolean isDone() {
@@ -106,12 +150,15 @@ public class SettingsSprite implements UIInterface {
 		return (selected);
 	}
 
-	@Override
-	public void update() {
-		// TODO Auto-generated method stub
-		
+	private void mouseSelect() {
+
+		for (int i = 0; i < element.length; i++) {
+			if ((mouseY > height[i] - MAX_SIZE)
+					&& (mouseY < height[i] + MAX_SIZE))
+				selected = i;
+		}
 	}
-	
+
 	void setText(Graphics2D g, int val) {
 		if (selected == val) {
 			g.setFont(f2);

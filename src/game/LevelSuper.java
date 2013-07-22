@@ -20,14 +20,13 @@ public abstract class LevelSuper implements LevelInterface {
 		drawList = new LinkedList<ImageInterface>();
 		colisionList = new LinkedList<SpriteInterface>();
 		keyList = new LinkedList<UIInterface>();
-
 	}
 
 	/**
 	 * Check collisions on the Sprite objects
 	 */
 	@Override
-	public void checkCollision() {
+	public synchronized void checkCollision() {
 		synchronized (colisionList) {
 			for (SpriteInterface spriteObj : colisionList) {
 				for (SpriteInterface otherSprite : colisionList) {
@@ -43,7 +42,7 @@ public abstract class LevelSuper implements LevelInterface {
 	 * Update the Sprite objects and Level
 	 */
 	@Override
-	public void update() {
+	public synchronized void update() {
 		synchronized (drawList) {
 			for (ImageInterface imageObj : drawList) {
 				imageObj.update();
@@ -55,7 +54,7 @@ public abstract class LevelSuper implements LevelInterface {
 	 * Draw the Image objects
 	 */
 	@Override
-	public void draw(Graphics2D offscreenGraphics) {
+	public synchronized void draw(Graphics2D offscreenGraphics) {
 		synchronized (drawList) {
 			for (ImageInterface imageObj : drawList) {
 				imageObj.draw(offscreenGraphics);
@@ -67,7 +66,7 @@ public abstract class LevelSuper implements LevelInterface {
 	 * Send the keyboard event to each Sprite
 	 */
 	@Override
-	public void keyboardEvent(KeyEvent ke) {
+	public synchronized void keyboardEvent(KeyEvent ke) {
 		synchronized (keyList) {
 			for (UIInterface spriteObj : keyList) {
 				spriteObj.keyboardEvent(ke);
@@ -79,7 +78,7 @@ public abstract class LevelSuper implements LevelInterface {
 	 * Send the mouse event to each Sprite
 	 */
 	@Override
-	public void mouseEvent(MouseEvent me) {
+	public synchronized void mouseEvent(MouseEvent me) {
 		synchronized (keyList) {
 			for (UIInterface spriteObj : keyList) {
 				spriteObj.mouseEvent(me);
