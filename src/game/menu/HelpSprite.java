@@ -18,7 +18,6 @@ public class HelpSprite implements UIInterface {
 
 	private final int MAX_SELECTIONS;
 	private final double MAX_SIZE = 40;
-	private final double MIN_SIZE = 30;
 
 	private int selected;
 
@@ -28,9 +27,7 @@ public class HelpSprite implements UIInterface {
 	private int[] length;
 	private int[] height;
 
-	private Color color1 = Color.BLUE;
 	private Color color2 = Color.BLACK;
-	private Font f1;
 	private Font f2;
 
 	private BufferedImage backgroundImage;
@@ -57,7 +54,6 @@ public class HelpSprite implements UIInterface {
 
 		down = false;
 		up = false;
-		f1 = new Font("Times New Roman", Font.BOLD, (int) MIN_SIZE);
 		f2 = new Font("Times New Roman", Font.BOLD, (int) MAX_SIZE);
 
 		try {

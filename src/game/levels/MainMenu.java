@@ -35,7 +35,7 @@ public class MainMenu extends LevelSuper {
 
 	@Override
 	public void draw(Graphics2D g) {
-		super.draw(g);
+		drawSprites(g);
 	}
 
 	private void change(int selected) {

@@ -140,8 +140,9 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		 */
 		offscreenGraphics.setColor(Color.WHITE);
 		offscreenGraphics.fillRect(0, 0, displayWidth, displayHeight);
-
-		gameLevel.draw(offscreenGraphics);
+		synchronized (gameLevel) {
+			gameLevel.draw(offscreenGraphics);
+		}
 		if (debug == true) {
 			debug(offscreenGraphics);
 		}
@@ -151,7 +152,9 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	public void update() {
 		switch (gameState) {
 		case RUNNING: {
-			gameLevel.update();
+			synchronized (gameLevel) {
+				gameLevel.update();
+			}
 			break;
 		}
 		case PAUSED: {
@@ -161,7 +164,6 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 			return;
 		}
 		case STARTING: {
-
 			if (tPlus == 0) {
 				count = 0;
 				System.out.println("Starting " + GAME_NAME);
@@ -242,12 +244,16 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 			GameEventDispatcher.dispatchEvent(new GameEvent(this,
 					GameEventType.End, this));
 		}
-		gameLevel.keyboardEvent(ke);
+		synchronized (gameLevel) {
+			gameLevel.keyboardEvent(ke);
+		}
 	}
 
 	@Override
 	public void mouseEvent(MouseEvent me) {
-		gameLevel.mouseEvent(me);
+		synchronized (gameLevel) {
+			gameLevel.mouseEvent(me);
+		}
 	}
 
 	@Override
@@ -296,9 +302,9 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		}
 		case Menu: {
 			// Update the graphics once to get something on the screen
-			Graphics2D offscreenGraphics = (Graphics2D) GameDisplay
-					.getContext();
-			offscreenGraphics.drawImage(loadingImage, null, 0, 0);
+			// Graphics2D offscreenGraphics = (Graphics2D) GameDisplay
+			// .getContext();
+			// offscreenGraphics.drawImage(loadingImage, null, 0, 0);
 			GameDisplay.update();
 
 			// Clear what was loaded
@@ -336,6 +342,10 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		g.drawString(
 				"Ticks: " + GameEngine.getTicks() + " FPS: "
 						+ GameEngine.getFrames(), displayWidth - 100, 50);
+	}
+
+	public static void debug(String st) {
+		System.out.println(st);
 	}
 
 	public void Load(int state) {

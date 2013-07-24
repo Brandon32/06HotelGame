@@ -3,23 +3,25 @@ package game;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 
+import engine.interfaces.ColisionInterface;
 import engine.interfaces.ImageInterface;
 import engine.interfaces.LevelInterface;
-import engine.interfaces.SpriteInterface;
 import engine.interfaces.UIInterface;
 
 public abstract class LevelSuper implements LevelInterface {
 
-	private LinkedList<ImageInterface> drawList;
-	private LinkedList<SpriteInterface> colisionList;
-	private LinkedList<UIInterface> keyList;
+	List<ImageInterface> drawList;
+	List<ColisionInterface> colisionList;
+	List<UIInterface> keyList;
 
 	public LevelSuper() {
-		drawList = new LinkedList<ImageInterface>();
-		colisionList = new LinkedList<SpriteInterface>();
-		keyList = new LinkedList<UIInterface>();
+		Start.debug("New lists");
+		drawList = new ArrayList<ImageInterface>();
+		colisionList = new ArrayList<ColisionInterface>();
+		keyList = new ArrayList<UIInterface>();
 	}
 
 	/**
@@ -28,8 +30,8 @@ public abstract class LevelSuper implements LevelInterface {
 	@Override
 	public synchronized void checkCollision() {
 		synchronized (colisionList) {
-			for (SpriteInterface spriteObj : colisionList) {
-				for (SpriteInterface otherSprite : colisionList) {
+			for (ColisionInterface spriteObj : colisionList) {
+				for (ColisionInterface otherSprite : colisionList) {
 					if (!otherSprite.equals(spriteObj)) {
 						spriteObj.checkCollision(otherSprite);
 					}
@@ -54,10 +56,15 @@ public abstract class LevelSuper implements LevelInterface {
 	 * Draw the Image objects
 	 */
 	@Override
-	public synchronized void draw(Graphics2D offscreenGraphics) {
+	public void draw(Graphics2D g) {
+		drawSprites(g);
+	}
+
+	public synchronized void drawSprites(Graphics2D g) {
 		synchronized (drawList) {
 			for (ImageInterface imageObj : drawList) {
-				imageObj.draw(offscreenGraphics);
+				Start.debug("Drawing drawList");
+				imageObj.draw(g);
 			}
 		}
 	}
@@ -96,53 +103,73 @@ public abstract class LevelSuper implements LevelInterface {
 		synchronized (keyList) {
 			keyList.clear();
 		}
+		Start.debug("Lists Cleared");
 	}
 
 	public synchronized void addFirst(ImageInterface ge) {
-		System.out.println("Added First");
-		if (ge instanceof SpriteInterface)
+		System.out.println("Added First: " + ge.getClass());
+		if (ge instanceof ColisionInterface) {
+			System.out.println("Added colisonList");
 			synchronized (colisionList) {
-				colisionList.addFirst((SpriteInterface) ge);
+				colisionList.add((ColisionInterface) ge);
 			}
-		if (ge instanceof ImageInterface)
+		}
+		if (ge instanceof ImageInterface) {
+			System.out.println("Added drawList");
 			synchronized (drawList) {
-				drawList.addFirst((ImageInterface) ge);
+				drawList.add((ImageInterface) ge);
 			}
-		if (ge instanceof UIInterface)
+		}
+		if (ge instanceof UIInterface) {
+			System.out.println("Added keyList");
 			synchronized (keyList) {
-				keyList.addFirst((UIInterface) ge);
+				keyList.add((UIInterface) ge);
 			}
+		}
 	}
 
 	public synchronized void remove(ImageInterface ge) {
-		System.out.println("Removed");
-		if (ge instanceof SpriteInterface)
+		System.out.println("Removed: " + ge.getClass());
+		if (ge instanceof ColisionInterface) {
+			System.out.println("Removed colisonList");
 			synchronized (colisionList) {
-				colisionList.remove((SpriteInterface) ge);
+				colisionList.remove((ColisionInterface) ge);
 			}
-		if (ge instanceof ImageInterface)
+		}
+		if (ge instanceof ImageInterface) {
+			System.out.println("Removed drawList");
 			synchronized (drawList) {
 				drawList.remove((ImageInterface) ge);
 			}
-		if (ge instanceof UIInterface)
+		}
+		if (ge instanceof UIInterface) {
+			System.out.println("Removed keyList");
 			synchronized (keyList) {
 				keyList.remove((UIInterface) ge);
 			}
+		}
 	}
 
 	public synchronized void addLast(ImageInterface ge) {
-		System.out.println("Added Last");
-		if (ge instanceof SpriteInterface)
-			synchronized (colisionList) {
-				colisionList.addLast((SpriteInterface) ge);
-			}
-		if (ge instanceof ImageInterface)
-			synchronized (drawList) {
-				drawList.addLast((ImageInterface) ge);
-			}
-		if (ge instanceof UIInterface)
-			synchronized (keyList) {
-				keyList.addLast((UIInterface) ge);
-			}
+		this.addFirst(ge);
+		// System.out.println("Added Last: " + ge.getClass());
+		// if (ge instanceof ColisionInterface) {
+		// System.out.println("Added colisonList");
+		// synchronized (colisionList) {
+		// colisionList.addLast((ColisionInterface) ge);
+		// }
+		// }
+		// if (ge instanceof ImageInterface) {
+		// System.out.println("Added drawList");
+		// synchronized (drawList) {
+		// drawList.addLast((ImageInterface) ge);
+		// }
+		// }
+		// if (ge instanceof UIInterface) {
+		// System.out.println("Added keyList");
+		// synchronized (keyList) {
+		// keyList.addLast((UIInterface) ge);
+		// }
+		// }
 	}
 }

@@ -10,10 +10,10 @@ import java.awt.event.MouseEvent;
 
 import engine.GameDisplay;
 import engine.GameEngine;
-import engine.interfaces.SpriteInterface;
+import engine.interfaces.ColisionInterface;
 import engine.interfaces.UIInterface;
 
-public class Mech implements SpriteInterface, UIInterface {
+public class Mech implements ColisionInterface, UIInterface {
 
 	private Font f1;
 	private Dimension displayBounds;
@@ -274,7 +274,7 @@ public class Mech implements SpriteInterface, UIInterface {
 	}
 
 	@Override
-	public void checkCollision(SpriteInterface obj) {
+	public void checkCollision(ColisionInterface obj) {
 		// TODO Auto-generated method stub
 
 	}
