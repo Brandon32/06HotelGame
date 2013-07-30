@@ -200,7 +200,7 @@ public class Mech implements ColisionInterface, UIInterface {
 					ltAlarm = currentTime + 100000000;
 				}
 		}
-		//slow down
+		// slow down
 		if (!ltLegDown && !ltLegUp) {
 			if (ltAlarm < currentTime) {
 				if (leftLegSpeed >= 0.1)

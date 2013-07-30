@@ -59,7 +59,8 @@ public class MainMenuSprite implements UIInterface {
 		f2 = new Font("Times New Roman", Font.BOLD, (int) MAX_SIZE);
 
 		try {
-			backgroundImage = ImageUtil.loadBufferedImage(this,"/Backgrounds/Menu.png");
+			backgroundImage = ImageUtil.loadBufferedImage(this,
+					"/Backgrounds/Menu.png");
 		} catch (IOException e) {
 			System.out.println("Menu Image Not Loaded");
 		}
@@ -68,10 +69,10 @@ public class MainMenuSprite implements UIInterface {
 	@Override
 	public void draw(Graphics2D g) {
 		RenderingHints rh = new RenderingHints(
-	            RenderingHints.KEY_TEXT_ANTIALIASING,
-	            RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
-	    g.setRenderingHints(rh);
-		
+				RenderingHints.KEY_TEXT_ANTIALIASING,
+				RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
+		g.setRenderingHints(rh);
+
 		if (backgroundImage != null) {
 			g.drawImage(backgroundImage, 0, 0, displayBounds.width,
 					displayBounds.height, null);
@@ -144,7 +145,11 @@ public class MainMenuSprite implements UIInterface {
 	public boolean isDone() {
 		return done;
 	}
-
+	
+	public void setDone(boolean done) {
+		this.done = done;
+	}
+	
 	public int getSelectedValue() {
 		return (selected);
 	}
@@ -167,6 +172,5 @@ public class MainMenuSprite implements UIInterface {
 			g.setColor(color1);
 		}
 	}
-
 
 }

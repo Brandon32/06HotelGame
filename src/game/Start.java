@@ -47,6 +47,10 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	private boolean Shift = false;
 	private int count;
 
+	private enum Load {
+		MENU, LEVEL, CREDITS
+	}
+	
 	private enum GameState {
 		STARTING, RUNNING, PAUSED, ENDING, RESTARTING
 	}
@@ -143,9 +147,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		synchronized (gameLevel) {
 			gameLevel.draw(offscreenGraphics);
 		}
-		if (debug == true) {
-			debug(offscreenGraphics);
-		}
+		debug(offscreenGraphics);
 	}
 
 	@Override
@@ -210,7 +212,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 			if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
 				Esc = true;
 				if (gameLevel instanceof MainMenu) {
-					Load(gameProgress);
+					Load(Load.LEVEL);
 				} else {
 					gameLevel = new MainMenu();
 				}
@@ -296,7 +298,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 			// gameLevel.clearLists();
 
 			// Load new level
-			Load(gameProgress);
+			Load(Load.LEVEL);
 			break;
 
 		}
@@ -311,21 +313,21 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 			// gameLevel.clearLists();
 
 			// Load new level
-			Load(0);
+			Load(Load.MENU);
 		}
 			break;
 		case End: {
 			gameProgress = 0;
 			gameLevel.clearLists();
 			gameState = GameState.ENDING;
-			Load(0);
+			Load(Load.MENU);
 			break;
 		}
 		case Restart: {
 			gameProgress = 0;
 			gameLevel.clearLists();
 			gameState = GameState.RESTARTING;
-			Load(0);
+			Load(Load.MENU);
 			break;
 		}
 		default:
@@ -334,43 +336,47 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	}
 
 	private void debug(Graphics2D g) {
-		g.setFont(f1);
-		g.setColor(Color.RED);
-		g.drawString(GAME_NAME, displayWidth - 100, 20);
-		g.drawString("Level: " + gameProgress, displayWidth - 100, 30);
-		g.drawString("State: " + gameState, displayWidth - 100, 40);
-		g.drawString(
-				"Ticks: " + GameEngine.getTicks() + " FPS: "
-						+ GameEngine.getFrames(), displayWidth - 100, 50);
+		if (debug == true) {
+			g.setFont(f1);
+			g.setColor(Color.RED);
+			g.drawString(GAME_NAME, displayWidth - 100, 20);
+			g.drawString("Level: " + gameProgress, displayWidth - 100, 30);
+			g.drawString("State: " + gameState, displayWidth - 100, 40);
+			g.drawString("Ticks: " + GameEngine.getTicks() + " FPS: "
+					+ GameEngine.getFrames(), displayWidth - 100, 50);
+		}
 	}
 
 	public static void debug(String st) {
-		System.out.println(st);
+		if (debug == true) {
+			System.out.println(st);
+		}
 	}
 
-	public void Load(int state) {
+	public void Load(Load state) {
 		switch (state) {
-		case 0: // Main Menu
+		case MENU: // Main Menu
 		{
 			gameLevel = new MainMenu();
 			// Load the Menu
 			break;
 		}
 
-		case 1: // Game
+		case LEVEL: // Game
 		{
 			// Intro of Game
-			LoadLevel(0);
+			LoadLevel(gameProgress);
 			break;
 		}
 
-		case 99: // Credits
+		case CREDITS: // Credits
 		{
 			// Credits
 			break;
 		}
 		default: // Menu
 		{
+			//Reset
 			gameLevel = new MainMenu();
 			gameProgress = 0;
 			break;
@@ -384,6 +390,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		// add first
 		case 0: // level 0 -
 		{
+			debug("New Level 01");
 			gameLevel = new Level01();
 			break;
 		}

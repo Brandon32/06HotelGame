@@ -13,15 +13,20 @@ import engine.interfaces.UIInterface;
 
 public abstract class LevelSuper implements LevelInterface {
 
-	List<ImageInterface> drawList;
-	List<ColisionInterface> colisionList;
-	List<UIInterface> keyList;
-
-	public LevelSuper() {
+	static List<ImageInterface> drawList;
+	static List<ColisionInterface> colisionList;
+	static List<UIInterface> keyList;
+	
+	static{
 		Start.debug("New lists");
-		drawList = new ArrayList<ImageInterface>();
-		colisionList = new ArrayList<ColisionInterface>();
-		keyList = new ArrayList<UIInterface>();
+		drawList = new ArrayList<>();
+		colisionList = new ArrayList<>();
+		keyList = new ArrayList<>();
+	}
+	
+	public LevelSuper() {
+		clearLists();
+
 	}
 
 	/**
@@ -62,8 +67,8 @@ public abstract class LevelSuper implements LevelInterface {
 
 	public synchronized void drawSprites(Graphics2D g) {
 		synchronized (drawList) {
+			//Start.debug("Drawing drawList " + drawList.size());
 			for (ImageInterface imageObj : drawList) {
-				Start.debug("Drawing drawList");
 				imageObj.draw(g);
 			}
 		}

@@ -57,7 +57,8 @@ public class HelpSprite implements UIInterface {
 		f2 = new Font("Times New Roman", Font.BOLD, (int) MAX_SIZE);
 
 		try {
-			backgroundImage = ImageUtil.loadBufferedImage(this,"/Backgrounds/Menu.png");
+			backgroundImage = ImageUtil.loadBufferedImage(this,
+					"/Backgrounds/Menu.png");
 		} catch (IOException e) {
 			System.out.println("Help Image Not Loaded");
 		}
@@ -66,10 +67,10 @@ public class HelpSprite implements UIInterface {
 	@Override
 	public void draw(Graphics2D g) {
 		RenderingHints rh = new RenderingHints(
-	            RenderingHints.KEY_TEXT_ANTIALIASING,
-	            RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
-	    g.setRenderingHints(rh);
-		
+				RenderingHints.KEY_TEXT_ANTIALIASING,
+				RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
+		g.setRenderingHints(rh);
+
 		if (backgroundImage != null) {
 			g.drawImage(backgroundImage, 0, 0, displayBounds.width,
 					displayBounds.height, null);
@@ -78,7 +79,8 @@ public class HelpSprite implements UIInterface {
 		g.setColor(color2);
 
 		for (int i = 0; i < MAX_SELECTIONS; i++) {
-			length[i] = ((displayBounds.width - g.getFontMetrics().stringWidth(element[i])) / 2);
+			length[i] = ((displayBounds.width - g.getFontMetrics().stringWidth(
+					element[i])) / 2);
 			height[i] = (int) (((i / (float) element.length) * (0.9) * displayBounds.height) + (displayBounds.height * 0.075));
 			g.drawString(element[i], length[i], height[i]);
 		}

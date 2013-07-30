@@ -9,41 +9,41 @@ import java.awt.event.MouseEvent;
  * 
  * @author Brandon Marshall
  */
-public interface LevelInterface
-{
-    /**
-     * Update the sprite's state.
-     * 
-     */
-    public abstract void update();
-    
-    /**
-     * Draw method
-     * 
-     * @param g
-     */
-    
-    public abstract void draw( Graphics2D g );
+public interface LevelInterface {
 	/**
-     * Determine if the passed Sprite object collided with this object.
-     * 
-     * @param obj
-     */
-    public abstract void checkCollision();
+	 * Update the sprite's state.
+	 * 
+	 */
+	public abstract void update();
 
-    /**
-     * Receive a keyboard event.
-     * 
-     * @param ke
-     */
-    public abstract void keyboardEvent( KeyEvent ke );
+	/**
+	 * Draw method
+	 * 
+	 * @param g
+	 */
 
-    /**
-     * Receive a mouse event.
-     * 
-     * @param me
-     */
-    public abstract void mouseEvent( MouseEvent me );
+	public abstract void draw(Graphics2D g);
+
+	/**
+	 * Determine if the passed Sprite object collided with this object.
+	 * 
+	 * @param obj
+	 */
+	public abstract void checkCollision();
+
+	/**
+	 * Receive a keyboard event.
+	 * 
+	 * @param ke
+	 */
+	public abstract void keyboardEvent(KeyEvent ke);
+
+	/**
+	 * Receive a mouse event.
+	 * 
+	 * @param me
+	 */
+	public abstract void mouseEvent(MouseEvent me);
 
 	public abstract void clearLists();
 
@@ -52,5 +52,5 @@ public interface LevelInterface
 	public abstract void remove(ImageInterface attachment);
 
 	public abstract void addLast(ImageInterface attachment);
-    
+
 }

@@ -30,6 +30,7 @@ public class MainMenu extends LevelSuper {
 		super.update();
 		if (menu.isDone()) {
 			change(menu.getSelectedValue());
+			menu.setDone(false);
 		}
 	}
 
@@ -41,7 +42,7 @@ public class MainMenu extends LevelSuper {
 	private void change(int selected) {
 		switch (selected) {
 		case 0:// NEW(0)
-			Start.setGameProgress(1);
+			Start.setGameProgress(0);
 			GameEventDispatcher.dispatchEvent(new GameEvent(this,
 					GameEventType.Load, this));
 			break;

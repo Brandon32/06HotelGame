@@ -3,15 +3,14 @@ package engine.events;
 /**
  * Game event listener
  * 
- * @author williamhooper 
+ * @author williamhooper
  */
 
-public interface GameEventListener
-{
-    /**
-     * Receive a game event
-     * 
-     * @param ge
-     */
-    public void gameEvent( GameEvent ge );
+public interface GameEventListener {
+	/**
+	 * Receive a game event
+	 * 
+	 * @param ge
+	 */
+	public void gameEvent(GameEvent ge);
 }

@@ -18,14 +18,15 @@ public class Level01 extends LevelSuper {
 	public Level01() {
 		super();
 		myMech = new Mech();
-		GameEventDispatcher.dispatchEvent(new GameEvent(this,
-				GameEventType.AddFirst, myMech));
+
 		try {
 			backgroundImage = ImageUtil.loadBufferedImage(this,
 					"/Backgrounds/Level1.png");
 		} catch (IOException e) {
 			System.out.println("Level1 Image Not Loaded");
 		}
+		GameEventDispatcher.dispatchEvent(new GameEvent(this,
+				GameEventType.AddFirst, myMech));
 	}
 
 	@Override
@@ -35,8 +36,8 @@ public class Level01 extends LevelSuper {
 
 	@Override
 	public void draw(Graphics2D g) {
-		super.draw(g);
 		if (backgroundImage != null)
 			g.drawImage(backgroundImage, null, 0, 0);
+		super.draw(g);
 	}
 }
