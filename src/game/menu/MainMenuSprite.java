@@ -7,11 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 import engine.GameDisplay;
-import engine.ImageUtil;
 import engine.interfaces.UIInterface;
 
 public class MainMenuSprite implements UIInterface {
@@ -31,8 +28,6 @@ public class MainMenuSprite implements UIInterface {
 	private Color color2 = Color.BLACK;
 	private Font f1;
 	private Font f2;
-
-	private BufferedImage backgroundImage;
 
 	boolean down;
 	boolean up;
@@ -58,12 +53,7 @@ public class MainMenuSprite implements UIInterface {
 		f1 = new Font("Times New Roman", Font.BOLD, (int) MIN_SIZE);
 		f2 = new Font("Times New Roman", Font.BOLD, (int) MAX_SIZE);
 
-		try {
-			backgroundImage = ImageUtil.loadBufferedImage(this,
-					"/Backgrounds/Menu.png");
-		} catch (IOException e) {
-			System.out.println("Menu Image Not Loaded");
-		}
+
 	}
 
 	@Override
@@ -73,15 +63,10 @@ public class MainMenuSprite implements UIInterface {
 				RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
 		g.setRenderingHints(rh);
 
-		if (backgroundImage != null) {
-			g.drawImage(backgroundImage, 0, 0, displayBounds.width,
-					displayBounds.height, null);
-		}
 
 		for (int i = 0; i < MAX_SELECTIONS; i++) {
 			setText(g, i);
-			length[i] = ((displayBounds.width - g.getFontMetrics().stringWidth(
-					element[i])) / 2);
+			length[i] = ((displayBounds.width - g.getFontMetrics().stringWidth(element[i])) / 2);
 			height[i] = (int) (((i / (float) element.length) * (0.9) * displayBounds.height) + (displayBounds.height * 0.075));
 			g.drawString(element[i], length[i], height[i]);
 		}
@@ -91,8 +76,8 @@ public class MainMenuSprite implements UIInterface {
 	public void update() {
 		// move the selected value to the next one
 		if (down == true) {
-			if (selected < MAX_SELECTIONS) {
-				selected = selected++;
+			if (selected < MAX_SELECTIONS - 1) {
+				selected++;
 			} else {
 				selected = 0;
 			}
@@ -100,9 +85,9 @@ public class MainMenuSprite implements UIInterface {
 		}
 		if (up == true) {
 			if (selected > 0) {
-				selected = selected--;
+				selected--;
 			} else {
-				selected = MAX_SELECTIONS;
+				selected = MAX_SELECTIONS - 1;
 			}
 			up = false;
 		}

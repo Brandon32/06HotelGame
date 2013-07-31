@@ -13,11 +13,11 @@ import engine.interfaces.UIInterface;
 
 public abstract class LevelSuper implements LevelInterface {
 
-	static List<ImageInterface> drawList;
-	static List<ColisionInterface> colisionList;
-	static List<UIInterface> keyList;
+	List<ImageInterface> drawList;
+	List<ColisionInterface> colisionList;
+	List<UIInterface> keyList;
 	
-	static{
+	{
 		Start.debug("New lists");
 		drawList = new ArrayList<>();
 		colisionList = new ArrayList<>();
@@ -25,7 +25,7 @@ public abstract class LevelSuper implements LevelInterface {
 	}
 	
 	public LevelSuper() {
-		clearLists();
+		//clearLists();
 
 	}
 
@@ -114,19 +114,19 @@ public abstract class LevelSuper implements LevelInterface {
 	public synchronized void addFirst(ImageInterface ge) {
 		System.out.println("Added First: " + ge.getClass());
 		if (ge instanceof ColisionInterface) {
-			System.out.println("Added colisonList");
+			//System.out.println("Added colisonList");
 			synchronized (colisionList) {
 				colisionList.add((ColisionInterface) ge);
 			}
 		}
 		if (ge instanceof ImageInterface) {
-			System.out.println("Added drawList");
+			//System.out.println("Added drawList");
 			synchronized (drawList) {
 				drawList.add((ImageInterface) ge);
 			}
 		}
 		if (ge instanceof UIInterface) {
-			System.out.println("Added keyList");
+			//System.out.println("Added keyList");
 			synchronized (keyList) {
 				keyList.add((UIInterface) ge);
 			}
@@ -136,19 +136,19 @@ public abstract class LevelSuper implements LevelInterface {
 	public synchronized void remove(ImageInterface ge) {
 		System.out.println("Removed: " + ge.getClass());
 		if (ge instanceof ColisionInterface) {
-			System.out.println("Removed colisonList");
+			//System.out.println("Removed colisonList");
 			synchronized (colisionList) {
 				colisionList.remove((ColisionInterface) ge);
 			}
 		}
 		if (ge instanceof ImageInterface) {
-			System.out.println("Removed drawList");
+			//System.out.println("Removed drawList");
 			synchronized (drawList) {
 				drawList.remove((ImageInterface) ge);
 			}
 		}
 		if (ge instanceof UIInterface) {
-			System.out.println("Removed keyList");
+			//System.out.println("Removed keyList");
 			synchronized (keyList) {
 				keyList.remove((UIInterface) ge);
 			}
@@ -156,7 +156,7 @@ public abstract class LevelSuper implements LevelInterface {
 	}
 
 	public synchronized void addLast(ImageInterface ge) {
-		this.addFirst(ge);
+		addFirst(ge);
 		// System.out.println("Added Last: " + ge.getClass());
 		// if (ge instanceof ColisionInterface) {
 		// System.out.println("Added colisonList");

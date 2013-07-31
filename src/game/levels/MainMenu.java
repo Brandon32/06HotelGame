@@ -1,5 +1,7 @@
 package game.levels;
 
+import engine.GameDisplay;
+import engine.ImageUtil;
 import engine.events.GameEvent;
 import engine.events.GameEvent.GameEventType;
 import engine.events.GameEventDispatcher;
@@ -9,20 +11,34 @@ import game.menu.HelpSprite;
 import game.menu.MainMenuSprite;
 import game.menu.SettingsSprite;
 
+import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class MainMenu extends LevelSuper {
 	private MainMenuSprite menu;
 	private SettingsSprite settings;
 	private HelpSprite help;
+	private BufferedImage backgroundImage;
+	private Dimension displayBounds;
 
 	public MainMenu() {
 		super();
+		displayBounds = GameDisplay.getBounds();
+		try {
+			backgroundImage = ImageUtil.loadBufferedImage(this,
+					"/Backgrounds/Menu.png");
+		} catch (IOException e) {
+			System.out.println("Menu Image Not Loaded");
+		}
+		
 		menu = new MainMenuSprite();
-		GameEventDispatcher.dispatchEvent(new GameEvent(this,
-				GameEventType.AddLast, menu));
 		settings = new SettingsSprite();
 		help = new HelpSprite();
+		
+		GameEventDispatcher.dispatchEvent(new GameEvent(this,
+				GameEventType.AddFirst, menu));
 	}
 
 	@Override
@@ -36,7 +52,12 @@ public class MainMenu extends LevelSuper {
 
 	@Override
 	public void draw(Graphics2D g) {
-		drawSprites(g);
+		if (backgroundImage != null) {
+			g.drawImage(backgroundImage, 0, 0, displayBounds.width,
+					displayBounds.height, null);
+		}
+
+		super.draw(g);
 	}
 
 	private void change(int selected) {

@@ -38,9 +38,8 @@ public class Startup extends LevelSuper {
 		super.draw(g);
 
 		if (backgroundImage != null) {
-			g.drawImage(backgroundImage, null, 0, 0);
-			// g.drawImage(backgroundImage, 0, 0, displayBounds.width,
-			// displayBounds.height, null);
+			g.drawImage(backgroundImage, 0, 0, displayBounds.width,
+					displayBounds.height, null);
 		}
 		g.setFont(f1);
 		g.setColor(Color.RED);
