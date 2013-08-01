@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import engine.GameDisplay;
 import engine.GameEngine;
 import engine.interfaces.ColisionInterface;
+import engine.interfaces.ImageInterface;
 import engine.interfaces.UIInterface;
 
 public class Mech implements ColisionInterface, UIInterface {
@@ -285,4 +286,13 @@ public class Mech implements ColisionInterface, UIInterface {
 		return null;
 	}
 
+	@Override
+	public int compareTo(ImageInterface compareImage) {
+		return this.getLayer() - ((ImageInterface) compareImage).getLayer();
+	}
+
+	@Override
+	public int getLayer() {
+		return 100;
+	}
 }

@@ -33,10 +33,11 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	private static int displayHeight = 720; // 720p
 	private static int displayWidth = 1280;
 	public static int score = 0;
-	private static int gameProgress = 0;
+	private static int currentGameProgress = 0;
 	private static Boolean debug = true; // switch to false on release
 
-	private LevelInterface gameLevel;
+	private LevelInterface currentGameLevel;
+	private LevelInterface loadedLevel;
 
 	private BufferedImage loadingImage;
 	private BufferedImage icon;
@@ -50,7 +51,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	private enum Load {
 		MENU, LEVEL, CREDITS
 	}
-	
+
 	private enum GameState {
 		STARTING, RUNNING, PAUSED, ENDING, RESTARTING
 	}
@@ -93,7 +94,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		// GameDisplay.setFullScreen();
 
 		f1 = new Font("Times New Roman", Font.PLAIN, (int) 12);
-		gameLevel = new Startup();
+		currentGameLevel = new Startup();
 		gameState = GameState.STARTING;
 		/**
 		 * Add a mouse listener so we can get mouse events
@@ -121,7 +122,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 
 	@Override
 	public void collisions() {
-		gameLevel.checkCollision();
+		currentGameLevel.checkCollision();
 	}
 
 	@Override
@@ -144,8 +145,8 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		 */
 		offscreenGraphics.setColor(Color.WHITE);
 		offscreenGraphics.fillRect(0, 0, displayWidth, displayHeight);
-		synchronized (gameLevel) {
-			gameLevel.draw(offscreenGraphics);
+		synchronized (currentGameLevel) {
+			currentGameLevel.draw(offscreenGraphics);
 		}
 		debug(offscreenGraphics);
 	}
@@ -154,8 +155,8 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	public void update() {
 		switch (gameState) {
 		case RUNNING: {
-			synchronized (gameLevel) {
-				gameLevel.update();
+			synchronized (currentGameLevel) {
+				currentGameLevel.update();
 			}
 			break;
 		}
@@ -173,13 +174,15 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 			}
 			if (System.nanoTime() > tPlus + (1 * 1000000000.0) && count == 0) {
 				count = 1;
-				gameLevel = new Loading();
+				loadedLevel = new Loading();
+				currentGameLevel = loadedLevel;
 				tPlus = System.nanoTime();
 				System.out.println("Loading");
 			}
 			if (System.nanoTime() > tPlus + (1 * 1000000000.0) && count == 1) {
 				count = 2;
-				gameLevel = new MainMenu();
+				loadedLevel = new MainMenu();
+				currentGameLevel = loadedLevel;
 				gameState = GameState.RUNNING;
 				tPlus = System.nanoTime();
 				System.out.println("Running");
@@ -204,18 +207,31 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 
 	@Override
 	public void keyboardEvent(KeyEvent ke) {
+
+		// Exit
+		if (Esc && Shift) {
+			GameEventDispatcher.dispatchEvent(new GameEvent(this,
+					GameEventType.End, this));
+		}
 		/**
 		 * Check Key Events before sending to sprite
 		 */
 		if (ke.getID() == KeyEvent.KEY_PRESSED) {
-			// Exit
+
 			if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
 				Esc = true;
-				if (gameLevel instanceof MainMenu) {
-					Load(Load.LEVEL);
-				} else {
-					gameLevel = new MainMenu();
+				if (currentGameLevel instanceof MainMenu)
+					if ((loadedLevel instanceof MainMenu)) {
+						// Do Nothing
+					} else {
+						currentGameLevel = loadedLevel;
+						Esc = false;
+					}
+				else {
+					Load(Load.MENU);
+					Esc = false;
 				}
+
 			}
 			if (ke.getKeyCode() == KeyEvent.VK_SHIFT) {
 				Shift = true;
@@ -235,26 +251,23 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 			}
 		}
 		if (ke.getID() == KeyEvent.KEY_RELEASED) {
-			if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {// TODO &&
+			if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
 				Esc = false;
 			}
 			if (ke.getKeyCode() == KeyEvent.VK_SHIFT) {
 				Shift = false;
 			}
 		}
-		if (Esc && Shift) {
-			GameEventDispatcher.dispatchEvent(new GameEvent(this,
-					GameEventType.End, this));
-		}
-		synchronized (gameLevel) {
-			gameLevel.keyboardEvent(ke);
+
+		synchronized (currentGameLevel) {
+			currentGameLevel.keyboardEvent(ke);
 		}
 	}
 
 	@Override
 	public void mouseEvent(MouseEvent me) {
-		synchronized (gameLevel) {
-			gameLevel.mouseEvent(me);
+		synchronized (currentGameLevel) {
+			currentGameLevel.mouseEvent(me);
 		}
 	}
 
@@ -262,20 +275,20 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	public synchronized void manageGameEvent(GameEvent ge) {
 		switch (ge.getType()) {
 		case AddFirst: {
-			synchronized (gameLevel) {
-				gameLevel.addFirst((ImageInterface) ge.getAttachment());
+			synchronized (currentGameLevel) {
+				currentGameLevel.addFirst((ImageInterface) ge.getAttachment());
 			}
 		}
 			break;
 		case Remove: {
-			synchronized (gameLevel) {
-				gameLevel.remove((ImageInterface) ge.getAttachment());
+			synchronized (currentGameLevel) {
+				currentGameLevel.remove((ImageInterface) ge.getAttachment());
 			}
 		}
 			break;
 		case AddLast: {
-			synchronized (gameLevel) {
-				gameLevel.addLast((ImageInterface) ge.getAttachment());
+			synchronized (currentGameLevel) {
+				currentGameLevel.addLast((ImageInterface) ge.getAttachment());
 			}
 		}
 			break;
@@ -284,7 +297,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		}
 		case NextLevel: // change level before loading
 		{
-			gameProgress = gameProgress + 1;
+			currentGameProgress = currentGameProgress + 1;
 			break;
 		}
 		case Load: {
@@ -317,15 +330,15 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		}
 			break;
 		case End: {
-			gameProgress = 0;
-			gameLevel.clearLists();
+			currentGameProgress = 0;
+			currentGameLevel.clearLists();
 			gameState = GameState.ENDING;
 			Load(Load.MENU);
 			break;
 		}
 		case Restart: {
-			gameProgress = 0;
-			gameLevel.clearLists();
+			currentGameProgress = 0;
+			currentGameLevel.clearLists();
 			gameState = GameState.RESTARTING;
 			Load(Load.MENU);
 			break;
@@ -340,7 +353,8 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 			g.setFont(f1);
 			g.setColor(Color.RED);
 			g.drawString(GAME_NAME, displayWidth - 100, 20);
-			g.drawString("Level: " + gameProgress, displayWidth - 100, 30);
+			g.drawString("Level: " + currentGameProgress, displayWidth - 100,
+					30);
 			g.drawString("State: " + gameState, displayWidth - 100, 40);
 			g.drawString("Ticks: " + GameEngine.getTicks() + " FPS: "
 					+ GameEngine.getFrames(), displayWidth - 100, 50);
@@ -354,33 +368,35 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	}
 
 	public void Load(Load state) {
-		switch (state) {
-		case MENU: // Main Menu
-		{
-			gameLevel = new MainMenu();
-			// Load the Menu
-			break;
-		}
+		synchronized (currentGameLevel) {
+			switch (state) {
+			case MENU: // Main Menu
+			{
+				currentGameLevel = new MainMenu();
+				// Load the Menu
+				break;
+			}
 
-		case LEVEL: // Game
-		{
-			// Intro of Game
-			LoadLevel(gameProgress);
-			break;
-		}
+			case LEVEL: // Game
+			{
+				// Intro of Game
+				LoadLevel(currentGameProgress);
+				break;
+			}
 
-		case CREDITS: // Credits
-		{
-			// Credits
-			break;
-		}
-		default: // Menu
-		{
-			//Reset
-			gameLevel = new MainMenu();
-			gameProgress = 0;
-			break;
-		}
+			case CREDITS: // Credits
+			{
+				// Credits
+				break;
+			}
+			default: // Menu
+			{
+				// Reset
+				currentGameLevel = new MainMenu();
+				currentGameProgress = 0;
+				break;
+			}
+			}
 		}
 	}
 
@@ -391,7 +407,8 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		case 0: // level 0 -
 		{
 			debug("New Level 01");
-			gameLevel = new Level01();
+			loadedLevel = new Level01();
+			currentGameLevel = loadedLevel;
 			break;
 		}
 		}
@@ -401,7 +418,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	 * @return the gameProgress
 	 */
 	public static int getGameProgress() {
-		return gameProgress;
+		return currentGameProgress;
 	}
 
 	/**
@@ -409,6 +426,6 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	 *            the gameProgress to set
 	 */
 	public static void setGameProgress(int gameProgress) {
-		Start.gameProgress = gameProgress;
+		Start.currentGameProgress = gameProgress;
 	}
 }

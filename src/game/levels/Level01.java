@@ -17,10 +17,9 @@ public class Level01 extends LevelSuper {
 	private Mech myMech;
 	private BufferedImage backgroundImage;
 	private Dimension displayBounds;
-	
-	
+
 	public Level01() {
-		
+
 		super();
 		displayBounds = GameDisplay.getBounds();
 		myMech = new Mech();

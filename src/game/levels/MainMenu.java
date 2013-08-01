@@ -32,11 +32,11 @@ public class MainMenu extends LevelSuper {
 		} catch (IOException e) {
 			System.out.println("Menu Image Not Loaded");
 		}
-		
+
 		menu = new MainMenuSprite();
 		settings = new SettingsSprite();
 		help = new HelpSprite();
-		
+
 		GameEventDispatcher.dispatchEvent(new GameEvent(this,
 				GameEventType.AddFirst, menu));
 	}

@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import engine.interfaces.ColisionInterface;
@@ -13,19 +14,19 @@ import engine.interfaces.UIInterface;
 
 public abstract class LevelSuper implements LevelInterface {
 
-	List<ImageInterface> drawList;
-	List<ColisionInterface> colisionList;
-	List<UIInterface> keyList;
-	
+	List<ImageInterface> drawList = null;
+	List<ColisionInterface> colisionList = null;
+	List<UIInterface> keyList = null;
+
 	{
 		Start.debug("New lists");
 		drawList = new ArrayList<>();
 		colisionList = new ArrayList<>();
 		keyList = new ArrayList<>();
 	}
-	
+
 	public LevelSuper() {
-		//clearLists();
+		// clearLists();
 
 	}
 
@@ -33,7 +34,7 @@ public abstract class LevelSuper implements LevelInterface {
 	 * Check collisions on the Sprite objects
 	 */
 	@Override
-	public synchronized void checkCollision() {
+	public void checkCollision() {
 		synchronized (colisionList) {
 			for (ColisionInterface spriteObj : colisionList) {
 				for (ColisionInterface otherSprite : colisionList) {
@@ -45,11 +46,17 @@ public abstract class LevelSuper implements LevelInterface {
 		}
 	}
 
+	public void sort() {
+		synchronized (drawList) {
+			Collections.sort(drawList);
+		}
+	}
+
 	/**
 	 * Update the Sprite objects and Level
 	 */
 	@Override
-	public synchronized void update() {
+	public void update() {
 		synchronized (drawList) {
 			for (ImageInterface imageObj : drawList) {
 				imageObj.update();
@@ -62,12 +69,8 @@ public abstract class LevelSuper implements LevelInterface {
 	 */
 	@Override
 	public void draw(Graphics2D g) {
-		drawSprites(g);
-	}
-
-	public synchronized void drawSprites(Graphics2D g) {
 		synchronized (drawList) {
-			//Start.debug("Drawing drawList " + drawList.size());
+			// Start.debug("Drawing drawList " + drawList.size());
 			for (ImageInterface imageObj : drawList) {
 				imageObj.draw(g);
 			}
@@ -78,7 +81,7 @@ public abstract class LevelSuper implements LevelInterface {
 	 * Send the keyboard event to each Sprite
 	 */
 	@Override
-	public synchronized void keyboardEvent(KeyEvent ke) {
+	public void keyboardEvent(KeyEvent ke) {
 		synchronized (keyList) {
 			for (UIInterface spriteObj : keyList) {
 				spriteObj.keyboardEvent(ke);
@@ -90,7 +93,7 @@ public abstract class LevelSuper implements LevelInterface {
 	 * Send the mouse event to each Sprite
 	 */
 	@Override
-	public synchronized void mouseEvent(MouseEvent me) {
+	public void mouseEvent(MouseEvent me) {
 		synchronized (keyList) {
 			for (UIInterface spriteObj : keyList) {
 				spriteObj.mouseEvent(me);
@@ -114,41 +117,42 @@ public abstract class LevelSuper implements LevelInterface {
 	public synchronized void addFirst(ImageInterface ge) {
 		System.out.println("Added First: " + ge.getClass());
 		if (ge instanceof ColisionInterface) {
-			//System.out.println("Added colisonList");
+			// System.out.println("Added colisonList");
 			synchronized (colisionList) {
 				colisionList.add((ColisionInterface) ge);
 			}
 		}
 		if (ge instanceof ImageInterface) {
-			//System.out.println("Added drawList");
+			// System.out.println("Added drawList");
 			synchronized (drawList) {
 				drawList.add((ImageInterface) ge);
 			}
 		}
 		if (ge instanceof UIInterface) {
-			//System.out.println("Added keyList");
+			// System.out.println("Added keyList");
 			synchronized (keyList) {
 				keyList.add((UIInterface) ge);
 			}
 		}
+		sort();
 	}
 
 	public synchronized void remove(ImageInterface ge) {
 		System.out.println("Removed: " + ge.getClass());
 		if (ge instanceof ColisionInterface) {
-			//System.out.println("Removed colisonList");
+			// System.out.println("Removed colisonList");
 			synchronized (colisionList) {
 				colisionList.remove((ColisionInterface) ge);
 			}
 		}
 		if (ge instanceof ImageInterface) {
-			//System.out.println("Removed drawList");
+			// System.out.println("Removed drawList");
 			synchronized (drawList) {
 				drawList.remove((ImageInterface) ge);
 			}
 		}
 		if (ge instanceof UIInterface) {
-			//System.out.println("Removed keyList");
+			// System.out.println("Removed keyList");
 			synchronized (keyList) {
 				keyList.remove((UIInterface) ge);
 			}

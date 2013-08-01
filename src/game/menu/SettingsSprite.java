@@ -12,6 +12,7 @@ import java.io.IOException;
 
 import engine.GameDisplay;
 import engine.ImageUtil;
+import engine.interfaces.ImageInterface;
 import engine.interfaces.UIInterface;
 
 public class SettingsSprite implements UIInterface {
@@ -170,4 +171,13 @@ public class SettingsSprite implements UIInterface {
 		}
 	}
 
+	@Override
+	public int compareTo(ImageInterface compareImage) {
+		return this.getLayer() - ((ImageInterface) compareImage).getLayer();
+	}
+
+	@Override
+	public int getLayer() {
+		return 100;
+	}
 }

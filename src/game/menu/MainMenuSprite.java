@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import engine.GameDisplay;
+import engine.interfaces.ImageInterface;
 import engine.interfaces.UIInterface;
 
 public class MainMenuSprite implements UIInterface {
@@ -53,7 +54,6 @@ public class MainMenuSprite implements UIInterface {
 		f1 = new Font("Times New Roman", Font.BOLD, (int) MIN_SIZE);
 		f2 = new Font("Times New Roman", Font.BOLD, (int) MAX_SIZE);
 
-
 	}
 
 	@Override
@@ -63,10 +63,10 @@ public class MainMenuSprite implements UIInterface {
 				RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
 		g.setRenderingHints(rh);
 
-
 		for (int i = 0; i < MAX_SELECTIONS; i++) {
 			setText(g, i);
-			length[i] = ((displayBounds.width - g.getFontMetrics().stringWidth(element[i])) / 2);
+			length[i] = ((displayBounds.width - g.getFontMetrics().stringWidth(
+					element[i])) / 2);
 			height[i] = (int) (((i / (float) element.length) * (0.9) * displayBounds.height) + (displayBounds.height * 0.075));
 			g.drawString(element[i], length[i], height[i]);
 		}
@@ -130,11 +130,11 @@ public class MainMenuSprite implements UIInterface {
 	public boolean isDone() {
 		return done;
 	}
-	
+
 	public void setDone(boolean done) {
 		this.done = done;
 	}
-	
+
 	public int getSelectedValue() {
 		return (selected);
 	}
@@ -158,4 +158,13 @@ public class MainMenuSprite implements UIInterface {
 		}
 	}
 
+	@Override
+	public int compareTo(ImageInterface compareImage) {
+		return this.getLayer() - ((ImageInterface) compareImage).getLayer();
+	}
+
+	@Override
+	public int getLayer() {
+		return 100;
+	}
 }

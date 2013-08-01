@@ -7,7 +7,7 @@ import java.awt.Graphics2D;
  * 
  * @author Brandon Marshall
  */
-public interface ImageInterface {
+public interface ImageInterface extends Comparable<ImageInterface> {
 	/**
 	 * Update the sprite's state.
 	 * 
@@ -21,4 +21,9 @@ public interface ImageInterface {
 	 */
 
 	public abstract void draw(Graphics2D g);
+
+	public abstract int compareTo(ImageInterface image);
+
+	public abstract int getLayer();
+
 }
