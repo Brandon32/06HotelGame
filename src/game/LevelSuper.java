@@ -48,6 +48,7 @@ public abstract class LevelSuper implements LevelInterface {
 
 	public void sort() {
 		synchronized (drawList) {
+			Start.debug("Sorted");
 			Collections.sort(drawList);
 		}
 	}

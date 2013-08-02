@@ -212,7 +212,23 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		if (Esc && Shift) {
 			GameEventDispatcher.dispatchEvent(new GameEvent(this,
 					GameEventType.End, this));
+			Esc = false;
+			Shift = false;
 		}
+		if (Esc) {
+			if (currentGameLevel instanceof MainMenu)
+				if ((loadedLevel instanceof MainMenu)) {
+					// Do Nothing
+				} else {
+					currentGameLevel = loadedLevel;
+					Esc = false;
+				}
+			else {
+				Load(Load.MENU);
+				Esc = false;
+			}
+		}
+
 		/**
 		 * Check Key Events before sending to sprite
 		 */
@@ -220,18 +236,6 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 
 			if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
 				Esc = true;
-				if (currentGameLevel instanceof MainMenu)
-					if ((loadedLevel instanceof MainMenu)) {
-						// Do Nothing
-					} else {
-						currentGameLevel = loadedLevel;
-						Esc = false;
-					}
-				else {
-					Load(Load.MENU);
-					Esc = false;
-				}
-
 			}
 			if (ke.getKeyCode() == KeyEvent.VK_SHIFT) {
 				Shift = true;
