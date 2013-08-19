@@ -6,6 +6,7 @@ import engine.events.GameEvent;
 import engine.events.GameEvent.GameEventType;
 import engine.events.GameEventDispatcher;
 import game.LevelSuper;
+import game.sprite.AIMech;
 import game.sprite.Mech;
 
 import java.awt.Dimension;
@@ -17,12 +18,14 @@ public class Level01 extends LevelSuper {
 	private Mech myMech;
 	private BufferedImage backgroundImage;
 	private Dimension displayBounds;
+	private AIMech evilMech;
 
 	public Level01() {
 
 		super();
 		displayBounds = GameDisplay.getBounds();
 		myMech = new Mech();
+		evilMech = new AIMech();
 
 		try {
 			backgroundImage = ImageUtil.loadBufferedImage(this,
@@ -32,6 +35,8 @@ public class Level01 extends LevelSuper {
 		}
 		GameEventDispatcher.dispatchEvent(new GameEvent(this,
 				GameEventType.AddFirst, myMech));
+		GameEventDispatcher.dispatchEvent(new GameEvent(this,
+				GameEventType.AddFirst, evilMech));
 	}
 
 	@Override

@@ -5,16 +5,13 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 
 import engine.GameDisplay;
 import engine.GameEngine;
 import engine.interfaces.ColisionInterface;
 import engine.interfaces.ImageInterface;
-import engine.interfaces.UIInterface;
-
-public class Mech implements ColisionInterface, UIInterface {
+@SuppressWarnings("unused")
+public class AIMech implements ColisionInterface{
 
 	private Font f1;
 	private Dimension displayBounds;
@@ -27,13 +24,13 @@ public class Mech implements ColisionInterface, UIInterface {
 	boolean ltPowerArm;
 	boolean rtGrab;
 	boolean ltGrab;
-	private boolean ltLegDown;
-	private boolean ltLegUp;
-	private boolean rtLegDown;
-	private boolean rtLegUp;
 
 	private double maxLegSpeed = 1;
 	private double minLegSpeed = -1;
+	private long currentTime = GameEngine.getCurrentTime();
+	private long rtAlarm = GameEngine.getCurrentTime();
+	private long ltAlarm = rtAlarm;
+	
 	double angle = 0;
 	private double doubleX = 100;
 	private double doubleY = 100;
@@ -47,15 +44,13 @@ public class Mech implements ColisionInterface, UIInterface {
 	private double leftLegSpeed;
 	private double speed;
 
-	private long currentTime = GameEngine.getCurrentTime();
-	private long rtAlarm = GameEngine.getCurrentTime();
-	private long ltAlarm = rtAlarm;
 
-	public Mech() {
+
+	public AIMech() {
 		displayBounds = GameDisplay.getBounds();
 		f1 = new Font("Times New Roman", Font.BOLD, (int) 12);
 
-		doubleX = displayBounds.width / 2;
+		doubleX = displayBounds.width / 3;
 		doubleY = displayBounds.height / 2;
 	}
 
@@ -74,7 +69,7 @@ public class Mech implements ColisionInterface, UIInterface {
 	public void draw(Graphics2D g) {
 
 		g.rotate(-angle, x, y);// mech
-		g.setColor(Color.BLUE);
+		g.setColor(Color.RED);
 		g.fillRect(x - width / 2, y - height / 2, width, height);
 
 		// top left
@@ -114,7 +109,7 @@ public class Mech implements ColisionInterface, UIInterface {
 		g.setColor(Color.BLACK);
 		g.drawLine(x, y, x - (int) (xVel * 20), y - (int) (yVel * 20)); // movement
 																		// direction
-		g.setColor(Color.red);
+		g.setColor(Color.blue);
 		g.drawLine(x, y, (int) (x - Math.sin(angle) * 10),
 				(int) (y - Math.cos(angle) * 10)); // facing direction
 
@@ -140,87 +135,11 @@ public class Mech implements ColisionInterface, UIInterface {
 		}
 	}
 
-	@Override
-	public void keyboardEvent(KeyEvent ke) {
-		if (ke.getID() == KeyEvent.KEY_PRESSED) {
-			if (ke.getKeyCode() == KeyEvent.VK_W) // right UP
-				ltLegUp = true;
-			if (ke.getKeyCode() == KeyEvent.VK_S) // right down
-				ltLegDown = true;
-			if (ke.getKeyCode() == KeyEvent.VK_UP
-					|| ke.getKeyCode() == KeyEvent.VK_8) // left UP
-				rtLegUp = true;
-			if (ke.getKeyCode() == KeyEvent.VK_DOWN
-					|| ke.getKeyCode() == KeyEvent.VK_2) // left down
-				rtLegDown = true;
-		}
-		if (ke.getID() == KeyEvent.KEY_RELEASED) {
-			if (ke.getKeyCode() == KeyEvent.VK_W) // right UP
-				ltLegUp = false;
-			if (ke.getKeyCode() == KeyEvent.VK_S) // right down
-				ltLegDown = false;
-			if (ke.getKeyCode() == KeyEvent.VK_UP
-					|| ke.getKeyCode() == KeyEvent.VK_8) // left UP
-				rtLegUp = false;
-			if (ke.getKeyCode() == KeyEvent.VK_DOWN
-					|| ke.getKeyCode() == KeyEvent.VK_2) // left down
-				rtLegDown = false;
-		}
-	}
-
-	@Override
-	public void mouseEvent(MouseEvent me) {
-
-	}
-
 	private void changeSpeed() {
-		if (rtLegUp) {
-			if (rightLegSpeed < maxLegSpeed)
-				if (rtAlarm < currentTime) {
-					rightLegSpeed += notch;
-					rtAlarm = currentTime + 100000000;
-				}
-		}
-		if (rtLegDown) {
-			if (rightLegSpeed > minLegSpeed)
-				if (rtAlarm < currentTime) {
-					rightLegSpeed -= notch;
-					rtAlarm = currentTime + 100000000;
-				}
-		}
-		if (ltLegUp) {
-			if (leftLegSpeed < maxLegSpeed)
-				if (ltAlarm < currentTime) {
-					leftLegSpeed += notch;
-					ltAlarm = currentTime + 100000000;
-				}
-		}
-		if (ltLegDown) {
-			if (leftLegSpeed > minLegSpeed)
-				if (ltAlarm < currentTime) {
-					leftLegSpeed -= notch;
-					ltAlarm = currentTime + 100000000;
-				}
-		}
-		// slow down
-		if (!ltLegDown && !ltLegUp) {
-			if (ltAlarm < currentTime) {
-				if (leftLegSpeed >= 0.1)
-					leftLegSpeed -= notch;
-				if (leftLegSpeed <= -0.1)
-					leftLegSpeed += notch;
-				ltAlarm = currentTime + 100000000;
-			}
-		}
-		if (!rtLegDown && !rtLegUp) {
-			if (rtAlarm < currentTime) {
-				if (rightLegSpeed > 0)
-					rightLegSpeed -= notch;
-				if (rightLegSpeed < 0)
-					rightLegSpeed += notch;
-				rtAlarm = currentTime + 100000000;
-			}
-		}
+
+					rightLegSpeed = notch * 2;
+
+					leftLegSpeed = notch * 6;
 	}
 
 	private void recalcAngle() {
