@@ -193,9 +193,9 @@ public class GameEngine implements Runnable, GameEventListener {
 
 			if (System.currentTimeMillis() - lastTimer1 > 1000) {
 				lastTimer1 += 1000;
-				Stopwatch.Display();
 				lastFrames = frames;
 				lastTicks = ticks;
+				Stopwatch.Display();
 				frames = 0;
 				ticks = 0;
 			}
