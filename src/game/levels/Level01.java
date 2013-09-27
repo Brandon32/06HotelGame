@@ -5,7 +5,7 @@ import engine.ImageUtil;
 import engine.events.GameEvent;
 import engine.events.GameEvent.GameEventType;
 import engine.events.GameEventDispatcher;
-import game.LevelSuper;
+import game.Level;
 import game.sprite.AIMech;
 import game.sprite.Mech;
 
@@ -14,7 +14,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class Level01 extends LevelSuper {
+public class Level01 extends Level {
 	private Mech myMech;
 	private BufferedImage backgroundImage;
 	private Dimension displayBounds;

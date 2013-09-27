@@ -5,7 +5,7 @@ import engine.ImageUtil;
 import engine.events.GameEvent;
 import engine.events.GameEvent.GameEventType;
 import engine.events.GameEventDispatcher;
-import game.LevelSuper;
+import game.Level;
 import game.Start;
 import game.menu.HelpSprite;
 import game.menu.MainMenuSprite;
@@ -16,7 +16,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class MainMenu extends LevelSuper {
+public class MainMenu extends Level {
 	private MainMenuSprite menu;
 	private SettingsSprite settings;
 	private HelpSprite help;

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import engine.events.GameEvent;
 import engine.events.GameEventDispatcher;
 import engine.events.GameEventListener;
+import engine.tools.Stopwatch;
 
 /**
  * Threaded game engine, with support for game events and collisions
@@ -155,6 +156,7 @@ public class GameEngine implements Runnable, GameEventListener {
 		long lastTimer1 = System.currentTimeMillis();
 		double nsPerTick = 1000000000.0 / DEFAULT_FPS;
 
+		Stopwatch.Awake();
 		running = true;
 		while (running) {
 			currentTime = System.nanoTime();
@@ -164,15 +166,23 @@ public class GameEngine implements Runnable, GameEventListener {
 
 			while (unprocessed >= 1) {
 				ticks++;
+				Stopwatch.Begin("Collisions");
 				game.collisions();
+				Stopwatch.End("Collisions");
+				Stopwatch.Begin("Update");
 				game.update();
+				Stopwatch.End("Update");
 				unprocessed -= 1;
 			}
 
 			if (shouldRender) {
 				frames++;
+				Stopwatch.Begin("Render");
 				game.render();
+				Stopwatch.End("Render");
+				Stopwatch.Begin("Draw");
 				game.draw();
+				Stopwatch.End("Draw");
 			}
 
 			try {
@@ -183,6 +193,7 @@ public class GameEngine implements Runnable, GameEventListener {
 
 			if (System.currentTimeMillis() - lastTimer1 > 1000) {
 				lastTimer1 += 1000;
+				Stopwatch.Display();
 				lastFrames = frames;
 				lastTicks = ticks;
 				frames = 0;

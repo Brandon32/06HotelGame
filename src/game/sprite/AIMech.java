@@ -178,7 +178,7 @@ public class AIMech implements ColisionInterface{
 		/* Check for left collision */
 
 		if (x <= 0) {
-			doubleX = (0);
+			doubleX = (0D);
 		}
 
 		/* Check for bottom collision */
@@ -190,7 +190,7 @@ public class AIMech implements ColisionInterface{
 		/* Check for top collision */
 
 		if (y <= 0) {
-			doubleY = (0);
+			doubleY = (0D);
 		}
 	}
 

@@ -8,7 +8,7 @@ import java.io.IOException;
 import engine.GameDisplay;
 import engine.ImageUtil;
 
-public class Loading extends LevelSuper {
+public class Loading extends Level {
 
 	private BufferedImage backgroundImage;
 	private Dimension displayBounds;

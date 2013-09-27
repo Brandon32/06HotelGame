@@ -12,7 +12,7 @@ import engine.interfaces.ImageInterface;
 import engine.interfaces.LevelInterface;
 import engine.interfaces.UIInterface;
 
-public abstract class LevelSuper implements LevelInterface {
+public abstract class Level implements LevelInterface {
 
 	List<ImageInterface> drawList = null;
 	List<ColisionInterface> colisionList = null;
@@ -20,12 +20,12 @@ public abstract class LevelSuper implements LevelInterface {
 
 	{
 		Start.debug("New lists");
-		drawList = new ArrayList<>();
-		colisionList = new ArrayList<>();
-		keyList = new ArrayList<>();
+		drawList = new ArrayList<ImageInterface>();
+		colisionList = new ArrayList<ColisionInterface>();
+		keyList = new ArrayList<UIInterface>();
 	}
 
-	public LevelSuper() {
+	public Level() {
 		// clearLists();
 
 	}

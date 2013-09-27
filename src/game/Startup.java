@@ -10,7 +10,7 @@ import java.io.IOException;
 import engine.GameDisplay;
 import engine.ImageUtil;
 
-public class Startup extends LevelSuper {
+public class Startup extends Level {
 
 	private BufferedImage backgroundImage;
 	private Dimension displayBounds;
