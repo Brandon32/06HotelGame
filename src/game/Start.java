@@ -2,7 +2,6 @@ package game;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
@@ -21,6 +20,7 @@ import engine.events.GameEventKeyboard;
 import engine.events.GameEventMouse;
 import engine.interfaces.ImageInterface;
 import engine.interfaces.LevelInterface;
+import engine.tools.DebugInfo;
 import game.levels.Level01;
 import game.levels.MainMenu;
 
@@ -28,13 +28,12 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	/**
 	 * Our list of sprites
 	 */
-	static final String GAME_NAME = "Mech Game";
+	private static final String GAME_NAME = "Mech Game";
 	private static String title = "Game";
 	private static int displayHeight = 720; // 720p
 	private static int displayWidth = 1280;
-	public static int score = 0;
+	//private static int score = 0;
 	private static int currentGameProgress = 0;
-	private static Boolean debug = true; // switch to false on release
 
 	private LevelInterface currentGameLevel;
 	private LevelInterface loadedLevel;
@@ -43,7 +42,6 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	private BufferedImage icon;
 
 	private long tPlus = 0;
-	private Font f1;
 	private boolean Esc = false;
 	private boolean Shift = false;
 	private int count;
@@ -93,7 +91,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		GameDisplay.create(displayWidth, displayHeight);
 		// GameDisplay.setFullScreen();
 
-		f1 = new Font("Times New Roman", Font.PLAIN, (int) 12);
+
 		currentGameLevel = new Startup();
 		gameState = GameState.STARTING;
 		/**
@@ -148,7 +146,12 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		synchronized (currentGameLevel) {
 			currentGameLevel.draw(offscreenGraphics);
 		}
-		debug(offscreenGraphics);
+		DebugInfo.debug(GAME_NAME);
+		DebugInfo.debug("Level: " + currentGameProgress);
+		DebugInfo.debug("State: " + gameState);
+		DebugInfo.debug("Ticks: " + GameEngine.getTicks() + " FPS: " + GameEngine.getFrames());
+		
+		DebugInfo.display(offscreenGraphics);
 	}
 
 	@Override
@@ -352,24 +355,6 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		}
 	}
 
-	private void debug(Graphics2D g) {
-		if (debug == true) {
-			g.setFont(f1);
-			g.setColor(Color.RED);
-			g.drawString(GAME_NAME, displayWidth - 100, 20);
-			g.drawString("Level: " + currentGameProgress, displayWidth - 100,
-					30);
-			g.drawString("State: " + gameState, displayWidth - 100, 40);
-			g.drawString("Ticks: " + GameEngine.getTicks() + " FPS: "
-					+ GameEngine.getFrames(), displayWidth - 100, 50);
-		}
-	}
-
-	public static void debug(String st) {
-		if (debug == true) {
-			System.out.println(st);
-		}
-	}
 
 	public void Load(Load state) {
 		synchronized (currentGameLevel) {
@@ -410,7 +395,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		// add first
 		case 0: // level 0 -
 		{
-			debug("New Level 01");
+			DebugInfo.debug("New Level 01");
 			loadedLevel = new Level01();
 			currentGameLevel = loadedLevel;
 			break;

@@ -11,6 +11,7 @@ import engine.interfaces.ColisionInterface;
 import engine.interfaces.ImageInterface;
 import engine.interfaces.LevelInterface;
 import engine.interfaces.UIInterface;
+import engine.tools.DebugInfo;
 
 public abstract class Level implements LevelInterface {
 
@@ -19,7 +20,7 @@ public abstract class Level implements LevelInterface {
 	List<UIInterface> keyList = null;
 
 	{
-		Start.debug("New lists");
+		DebugInfo.debug("New lists");
 		drawList = new ArrayList<ImageInterface>();
 		colisionList = new ArrayList<ColisionInterface>();
 		keyList = new ArrayList<UIInterface>();
@@ -48,7 +49,7 @@ public abstract class Level implements LevelInterface {
 
 	public void sort() {
 		synchronized (drawList) {
-			Start.debug("Sorted");
+			DebugInfo.debug("Sorted");
 			Collections.sort(drawList);
 		}
 	}
@@ -112,7 +113,7 @@ public abstract class Level implements LevelInterface {
 		synchronized (keyList) {
 			keyList.clear();
 		}
-		Start.debug("Lists Cleared");
+		DebugInfo.debug("Lists Cleared");
 	}
 
 	public synchronized void addFirst(ImageInterface ge) {
