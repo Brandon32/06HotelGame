@@ -89,7 +89,8 @@ public class Stopwatch {
 			// and reset the recording
 			entry.Reset();
 		}
-		System.out.println(displayText);
+		DebugInfo.debugLong(displayText);
+		//System.out.println(displayText);
 		startTime = System.nanoTime();
 	}
 }

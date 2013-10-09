@@ -20,7 +20,7 @@ public abstract class Level implements LevelInterface {
 	List<UIInterface> keyList = null;
 
 	{
-		DebugInfo.debug("New lists");
+		DebugInfo.debugShort("New lists");
 		drawList = new ArrayList<ImageInterface>();
 		colisionList = new ArrayList<ColisionInterface>();
 		keyList = new ArrayList<UIInterface>();
@@ -49,7 +49,7 @@ public abstract class Level implements LevelInterface {
 
 	public void sort() {
 		synchronized (drawList) {
-			DebugInfo.debug("Sorted");
+			DebugInfo.debugShort("Sorted");
 			Collections.sort(drawList);
 		}
 	}
@@ -113,7 +113,7 @@ public abstract class Level implements LevelInterface {
 		synchronized (keyList) {
 			keyList.clear();
 		}
-		DebugInfo.debug("Lists Cleared");
+		DebugInfo.debugShort("Lists Cleared");
 	}
 
 	public synchronized void addFirst(ImageInterface ge) {

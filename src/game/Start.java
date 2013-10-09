@@ -13,6 +13,7 @@ import engine.Game;
 import engine.GameDisplay;
 import engine.GameEngine;
 import engine.ImageUtil;
+import engine.Keyboard;
 import engine.events.GameEvent;
 import engine.events.GameEvent.GameEventType;
 import engine.events.GameEventDispatcher;
@@ -32,7 +33,6 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	private static String title = "Game";
 	private static int displayHeight = 720; // 720p
 	private static int displayWidth = 1280;
-	//private static int score = 0;
 	private static int currentGameProgress = 0;
 
 	private LevelInterface currentGameLevel;
@@ -42,8 +42,6 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	private BufferedImage icon;
 
 	private long tPlus = 0;
-	private boolean Esc = false;
-	private boolean Shift = false;
 	private int count;
 
 	private enum Load {
@@ -72,6 +70,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 			 */
 			GameDisplay.dispose();
 		}
+		DebugInfo.debugLog("Stoped");
 	}
 
 	/*--Constructor-------------------------------------------------------------------------------------------*/
@@ -109,7 +108,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		try {
 			icon = ImageUtil.loadBufferedImage(this, "/Icon.png");
 		} catch (IOException e) {
-			System.out.println("Icon Image Not Loaded");
+			DebugInfo.debugLog("Icon Image Not Loaded");
 		}
 		if (icon != null) {
 			GameDisplay.icon(icon);
@@ -146,10 +145,10 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		synchronized (currentGameLevel) {
 			currentGameLevel.draw(offscreenGraphics);
 		}
-		DebugInfo.debug(GAME_NAME);
-		DebugInfo.debug("Level: " + currentGameProgress);
-		DebugInfo.debug("State: " + gameState);
-		DebugInfo.debug("Ticks: " + GameEngine.getTicks() + " FPS: " + GameEngine.getFrames());
+		DebugInfo.debugShort(GAME_NAME);
+		DebugInfo.debugShort("Level: " + currentGameProgress);
+		DebugInfo.debugShort("State: " + gameState);
+		DebugInfo.debugShort("Ticks: " + GameEngine.getTicks() + " FPS: " + GameEngine.getFrames());
 		
 		DebugInfo.display(offscreenGraphics);
 	}
@@ -172,7 +171,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		case STARTING: {
 			if (tPlus == 0) {
 				count = 0;
-				System.out.println("Starting " + GAME_NAME);
+				DebugInfo.debugLog("Starting " + GAME_NAME);
 				tPlus = GameEngine.getCurrentTime();
 			}
 			if (System.nanoTime() > tPlus + (1 * 1000000000.0) && count == 0) {
@@ -180,7 +179,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 				loadedLevel = new Loading();
 				currentGameLevel = loadedLevel;
 				tPlus = System.nanoTime();
-				System.out.println("Loading");
+				DebugInfo.debugLog("Loading");
 			}
 			if (System.nanoTime() > tPlus + (1 * 1000000000.0) && count == 1) {
 				count = 2;
@@ -188,18 +187,18 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 				currentGameLevel = loadedLevel;
 				gameState = GameState.RUNNING;
 				tPlus = System.nanoTime();
-				System.out.println("Running");
+				DebugInfo.debugLog("Running");
 			}
 			break;
 		}
 		case RESTARTING: {
-			System.out.println("Restarting");
+			DebugInfo.debugLog("Restarting");
 			gameState = GameState.RUNNING;
 			GameEngine.stop();
 			break;
 		}
 		case ENDING: {
-			System.out.println("Stopping");
+			DebugInfo.debugLog("Stopping");
 			GameEngine.stop();
 			break;
 		}
@@ -210,41 +209,33 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 
 	@Override
 	public void keyboardEvent(KeyEvent ke) {
+		
+		//Fix Repeated calls when looped
+		
+		Keyboard.keyboardEvent(ke);
 
 		// Exit
-		if (Esc && Shift) {
+		if (Keyboard.isPressed(KeyEvent.VK_ESCAPE) && Keyboard.isPressed(KeyEvent.VK_SHIFT)) {
 			GameEventDispatcher.dispatchEvent(new GameEvent(this,
 					GameEventType.End, this));
-			Esc = false;
-			Shift = false;
 		}
-		if (Esc) {
+		if (Keyboard.isPressed(KeyEvent.VK_ESCAPE)) {
 			if (currentGameLevel instanceof MainMenu)
 				if ((loadedLevel instanceof MainMenu)) {
 					// Do Nothing
 				} else {
 					currentGameLevel = loadedLevel;
-					Esc = false;
 				}
 			else {
 				Load(Load.MENU);
-				Esc = false;
 			}
 		}
 
 		/**
 		 * Check Key Events before sending to sprite
 		 */
-		if (ke.getID() == KeyEvent.KEY_PRESSED) {
-
-			if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
-				Esc = true;
-			}
-			if (ke.getKeyCode() == KeyEvent.VK_SHIFT) {
-				Shift = true;
-			}
 			// Pause or Run
-			if (ke.getKeyCode() == KeyEvent.VK_P) {
+			if (Keyboard.isPressed(KeyEvent.VK_P)) {
 				if (gameState == GameState.RUNNING) {
 					gameState = GameState.PAUSED;
 				} else if (gameState == GameState.PAUSED) {
@@ -252,19 +243,10 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 				}
 			}
 			// Menu
-			if (ke.getKeyCode() == KeyEvent.VK_M) {
+			if (Keyboard.isPressed(KeyEvent.VK_M)) {
 				GameEventDispatcher.dispatchEvent(new GameEvent(this,
 						GameEventType.Menu, this));
 			}
-		}
-		if (ke.getID() == KeyEvent.KEY_RELEASED) {
-			if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
-				Esc = false;
-			}
-			if (ke.getKeyCode() == KeyEvent.VK_SHIFT) {
-				Shift = false;
-			}
-		}
 
 		synchronized (currentGameLevel) {
 			currentGameLevel.keyboardEvent(ke);
@@ -395,7 +377,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		// add first
 		case 0: // level 0 -
 		{
-			DebugInfo.debug("New Level 01");
+			DebugInfo.debugShort("New Level 01");
 			loadedLevel = new Level01();
 			currentGameLevel = loadedLevel;
 			break;

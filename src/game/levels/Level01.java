@@ -21,7 +21,6 @@ public class Level01 extends Level {
 	private AIMech evilMech;
 
 	public Level01() {
-
 		super();
 		displayBounds = GameDisplay.getBounds();
 		myMech = new Mech();

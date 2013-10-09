@@ -143,27 +143,23 @@ public class Mech implements ColisionInterface, UIInterface {
 	@Override
 	public void keyboardEvent(KeyEvent ke) {
 		if (ke.getID() == KeyEvent.KEY_PRESSED) {
-			if (ke.getKeyCode() == KeyEvent.VK_W) // right UP
+			if (ke.getKeyCode() == KeyEvent.VK_D || ke.getKeyCode() == KeyEvent.VK_W) // right UP
 				ltLegUp = true;
-			if (ke.getKeyCode() == KeyEvent.VK_S) // right down
+			if (ke.getKeyCode() == KeyEvent.VK_D || ke.getKeyCode() == KeyEvent.VK_S) // right down
 				ltLegDown = true;
-			if (ke.getKeyCode() == KeyEvent.VK_UP
-					|| ke.getKeyCode() == KeyEvent.VK_8) // left UP
+			if (ke.getKeyCode() == KeyEvent.VK_A || ke.getKeyCode() == KeyEvent.VK_W) // left UP
 				rtLegUp = true;
-			if (ke.getKeyCode() == KeyEvent.VK_DOWN
-					|| ke.getKeyCode() == KeyEvent.VK_2) // left down
+			if (ke.getKeyCode() == KeyEvent.VK_A || ke.getKeyCode() == KeyEvent.VK_S) // left down
 				rtLegDown = true;
 		}
 		if (ke.getID() == KeyEvent.KEY_RELEASED) {
-			if (ke.getKeyCode() == KeyEvent.VK_W) // right UP
+			if (ke.getKeyCode() == KeyEvent.VK_D ||  ke.getKeyCode() == KeyEvent.VK_W) // right UP
 				ltLegUp = false;
-			if (ke.getKeyCode() == KeyEvent.VK_S) // right down
+			if (ke.getKeyCode() == KeyEvent.VK_D ||  ke.getKeyCode() == KeyEvent.VK_S) // right down
 				ltLegDown = false;
-			if (ke.getKeyCode() == KeyEvent.VK_UP
-					|| ke.getKeyCode() == KeyEvent.VK_8) // left UP
+			if (ke.getKeyCode() == KeyEvent.VK_A ||  ke.getKeyCode() == KeyEvent.VK_W) // left UP
 				rtLegUp = false;
-			if (ke.getKeyCode() == KeyEvent.VK_DOWN
-					|| ke.getKeyCode() == KeyEvent.VK_2) // left down
+			if (ke.getKeyCode() == KeyEvent.VK_A ||  ke.getKeyCode() == KeyEvent.VK_S) // left down
 				rtLegDown = false;
 		}
 	}
@@ -202,7 +198,7 @@ public class Mech implements ColisionInterface, UIInterface {
 					ltAlarm = currentTime + 100000000;
 				}
 		}
-		// slow down
+		// slow down lt
 		if (!ltLegDown && !ltLegUp) {
 			if (ltAlarm < currentTime) {
 				if (leftLegSpeed >= 0.1)
@@ -212,6 +208,7 @@ public class Mech implements ColisionInterface, UIInterface {
 				ltAlarm = currentTime + 100000000;
 			}
 		}
+		// slow down rt
 		if (!rtLegDown && !rtLegUp) {
 			if (rtAlarm < currentTime) {
 				if (rightLegSpeed > 0)
