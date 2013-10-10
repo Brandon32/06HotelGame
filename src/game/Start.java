@@ -21,6 +21,7 @@ import engine.events.GameEventKeyboard;
 import engine.events.GameEventMouse;
 import engine.interfaces.ImageInterface;
 import engine.interfaces.LevelInterface;
+import engine.interfaces.UserInputInterface;
 import engine.tools.DebugInfo;
 import game.levels.Level01;
 import game.levels.MainMenu;
@@ -34,6 +35,8 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	private static int displayHeight = 720; // 720p
 	private static int displayWidth = 1280;
 	private static int currentGameProgress = 0;
+	
+	private UserInputInterface input;
 
 	private LevelInterface currentGameLevel;
 	private LevelInterface loadedLevel;
@@ -101,6 +104,8 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		 * Add a keyboard listener so we can get key presses
 		 */
 		GameDisplay.addKeyboardListener(this);
+		input = new Keyboard();
+		
 		GameDisplay.captureCursor(false);
 		GameDisplay.title(title);
 
@@ -212,14 +217,14 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		
 		//Fix Repeated calls when looped
 		
-		Keyboard.keyboardEvent(ke);
+		input.keyboardEvent(ke);
 
 		// Exit
-		if (Keyboard.isPressed(KeyEvent.VK_ESCAPE) && Keyboard.isPressed(KeyEvent.VK_SHIFT)) {
+		if (input.isActive(KeyEvent.VK_ESCAPE) && input.isActive(KeyEvent.VK_SHIFT)) {
 			GameEventDispatcher.dispatchEvent(new GameEvent(this,
 					GameEventType.End, this));
 		}
-		if (Keyboard.isPressed(KeyEvent.VK_ESCAPE)) {
+		if (input.isActive(KeyEvent.VK_ESCAPE)) {
 			if (currentGameLevel instanceof MainMenu)
 				if ((loadedLevel instanceof MainMenu)) {
 					// Do Nothing
@@ -235,7 +240,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		 * Check Key Events before sending to sprite
 		 */
 			// Pause or Run
-			if (Keyboard.isPressed(KeyEvent.VK_P)) {
+			if (input.isActive(KeyEvent.VK_P)) {
 				if (gameState == GameState.RUNNING) {
 					gameState = GameState.PAUSED;
 				} else if (gameState == GameState.PAUSED) {
@@ -243,7 +248,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 				}
 			}
 			// Menu
-			if (Keyboard.isPressed(KeyEvent.VK_M)) {
+			if (input.isActive(KeyEvent.VK_M)) {
 				GameEventDispatcher.dispatchEvent(new GameEvent(this,
 						GameEventType.Menu, this));
 			}

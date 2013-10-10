@@ -2,12 +2,14 @@ package engine;
 
 import java.awt.event.KeyEvent;
 
-public class Keyboard {
+import engine.interfaces.UserInputInterface;
+
+public class Keyboard implements UserInputInterface {
 
 	private static boolean keyState;
 	private static boolean[] Key = new boolean[KeyEvent.KEY_LAST];;
 
-	public static void keyboardEvent(KeyEvent ke) {
+	public void keyboardEvent(KeyEvent ke) {
 
 		if (ke.getID() == KeyEvent.KEY_PRESSED) {
 			keyState = true;
@@ -18,7 +20,7 @@ public class Keyboard {
 		Key[ke.getKeyCode()] = keyState;
 	}
 
-	public static boolean isPressed(int keyCode) {
+	public boolean isActive(int keyCode) {
 		return (Key[keyCode]);
 	}
 }
