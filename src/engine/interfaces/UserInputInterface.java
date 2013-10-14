@@ -8,4 +8,6 @@ public interface UserInputInterface {
 	
 	public boolean isActive(int keyCode);
 	
+	public void takeActive(int keyCode);
+	
 }

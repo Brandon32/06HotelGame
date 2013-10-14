@@ -1,4 +1,4 @@
-package engine.interfaces;
+package engine.sprites.interfaces;
 
 import java.awt.Graphics2D;
 

@@ -4,6 +4,8 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import engine.sprites.interfaces.ImageInterface;
+
 /**
  * Sprite class
  * 

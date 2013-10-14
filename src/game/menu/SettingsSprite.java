@@ -12,8 +12,8 @@ import java.io.IOException;
 
 import engine.GameDisplay;
 import engine.ImageUtil;
-import engine.interfaces.ImageInterface;
-import engine.interfaces.UIInterface;
+import engine.sprites.interfaces.ImageInterface;
+import engine.sprites.interfaces.UIInterface;
 
 public class SettingsSprite implements UIInterface {
 

@@ -10,9 +10,9 @@ import java.awt.event.MouseEvent;
 
 import engine.GameDisplay;
 import engine.GameEngine;
-import engine.interfaces.ColisionInterface;
-import engine.interfaces.ImageInterface;
-import engine.interfaces.UIInterface;
+import engine.sprites.interfaces.ColisionInterface;
+import engine.sprites.interfaces.ImageInterface;
+import engine.sprites.interfaces.UIInterface;
 
 public class Mech implements ColisionInterface, UIInterface {
 
@@ -27,18 +27,18 @@ public class Mech implements ColisionInterface, UIInterface {
 	boolean ltPowerArm;
 	boolean rtGrab;
 	boolean ltGrab;
-	private boolean ltLegDown;
-	private boolean ltLegUp;
-	private boolean rtLegDown;
-	private boolean rtLegUp;
+	private boolean ltDown;
+	private boolean ltUp;
+	private boolean rtDown;
+	private boolean rtUp;
 
 	private double maxLegSpeed = 1;
 	private double minLegSpeed = -1;
 	double angle = 0;
 	private double doubleX = 100;
 	private double doubleY = 100;
-	private int x = 100;
-	private int y = 100;
+	private int intX = 100;
+	private int intY = 100;
 	private int width = 20;
 	private int height = 20;
 	private double xVel;
@@ -50,6 +50,7 @@ public class Mech implements ColisionInterface, UIInterface {
 	private long currentTime = GameEngine.getCurrentTime();
 	private long rtAlarm = GameEngine.getCurrentTime();
 	private long ltAlarm = rtAlarm;
+	private Rectangle boundingBox;
 
 	public Mech() {
 		displayBounds = GameDisplay.getBounds();
@@ -57,6 +58,9 @@ public class Mech implements ColisionInterface, UIInterface {
 
 		doubleX = displayBounds.width / 2;
 		doubleY = displayBounds.height / 2;
+		
+		boundingBox.setLocation(intX, intY);
+		
 	}
 
 	@Override
@@ -73,9 +77,9 @@ public class Mech implements ColisionInterface, UIInterface {
 	@Override
 	public void draw(Graphics2D g) {
 
-		g.rotate(-angle, x, y);// mech
+		g.rotate(-angle, intX, intY);// mech
 		g.setColor(Color.BLUE);
-		g.fillRect(x - width / 2, y - height / 2, width, height);
+		g.fillRect(intX - width / 2, intY - height / 2, width, height);
 
 		// top left
 		if (leftLegSpeed > 0)
@@ -83,7 +87,7 @@ public class Mech implements ColisionInterface, UIInterface {
 					155, 155));
 		else
 			g.setColor(new Color(0, 155, 155));
-		g.fillOval(x - width / 2, y - height / 2, 10, 10);
+		g.fillOval(intX - width / 2, intY - height / 2, 10, 10);
 
 		// botom left
 		if (leftLegSpeed <= 0)
@@ -91,7 +95,7 @@ public class Mech implements ColisionInterface, UIInterface {
 					155, 155));
 		else
 			g.setColor(new Color(0, 155, 155));
-		g.fillOval(x - width / 2, y, 10, 10);
+		g.fillOval(intX - width / 2, intY, 10, 10);
 
 		// top right
 		if (rightLegSpeed > 0)
@@ -99,7 +103,7 @@ public class Mech implements ColisionInterface, UIInterface {
 					155, 155));
 		else
 			g.setColor(new Color(0, 155, 155));
-		g.fillOval(x, y - height / 2, 10, 10);
+		g.fillOval(intX, intY - height / 2, 10, 10);
 
 		// botom right
 		if (rightLegSpeed <= 0)
@@ -107,60 +111,60 @@ public class Mech implements ColisionInterface, UIInterface {
 					155, 155));
 		else
 			g.setColor(new Color(0, 155, 155));
-		g.fillOval(x, y, 10, 10);
+		g.fillOval(intX, intY, 10, 10);
 
-		g.rotate(angle, x, y);// end mech
+		g.rotate(angle, intX, intY);// end mech
 
 		g.setColor(Color.BLACK);
-		g.drawLine(x, y, x - (int) (xVel * 20), y - (int) (yVel * 20)); // movement
+		g.drawLine(intX, intY, intX - (int) (xVel * 20), intY - (int) (yVel * 20)); // movement
 																		// direction
 		g.setColor(Color.red);
-		g.drawLine(x, y, (int) (x - Math.sin(angle) * 10),
-				(int) (y - Math.cos(angle) * 10)); // facing direction
+		g.drawLine(intX, intY, (int) (intX - Math.sin(angle) * 10),
+				(int) (intY - Math.cos(angle) * 10)); // facing direction
 
 		// debug
 		{
 			g.setFont(f1);
 			g.setColor(Color.RED);
-			g.drawRect(x + 99, y + 89, 200, 200);
-			g.drawLine(x + width/2, y + height/2, x + 99, y + 89);
+			g.drawRect(intX + 99, intY + 89, 200, 200);
+			g.drawLine(intX + width/2, intY + height/2, intX + 99, intY + 89);
 			g.drawString(
 					"Right Speed: " + String.format("%.3f", rightLegSpeed * 10),
-					x + 100, y + 100);
+					intX + 100, intY + 100);
 			g.drawString(
 					"Left Speed:  " + String.format("%.3f", leftLegSpeed * 10),
-					x + 100, y + 110);
+					intX + 100, intY + 110);
 			g.drawString("Angle: " + (int) Math.toDegrees(angle) + " Degrees",
-					x + 100, y + 120);
-			g.drawString("Speed: " + Math.round(speed * 10), x + 100, y + 130);
+					intX + 100, intY + 120);
+			g.drawString("Speed: " + Math.round(speed * 10), intX + 100, intY + 130);
 			g.drawString("X Velocity: " + String.format("%.3f", xVel * 10),
-					x + 100, y + 140);
+					intX + 100, intY + 140);
 			g.drawString("Y Velocity: " + String.format("%.3f", yVel * 10),
-					x + 100, y + 150);
+					intX + 100, intY + 150);
 		}
 	}
 
 	@Override
 	public void keyboardEvent(KeyEvent ke) {
 		if (ke.getID() == KeyEvent.KEY_PRESSED) {
-			if (ke.getKeyCode() == KeyEvent.VK_D || ke.getKeyCode() == KeyEvent.VK_W) // right UP
-				ltLegUp = true;
-			if (ke.getKeyCode() == KeyEvent.VK_D || ke.getKeyCode() == KeyEvent.VK_S) // right down
-				ltLegDown = true;
-			if (ke.getKeyCode() == KeyEvent.VK_A || ke.getKeyCode() == KeyEvent.VK_W) // left UP
-				rtLegUp = true;
-			if (ke.getKeyCode() == KeyEvent.VK_A || ke.getKeyCode() == KeyEvent.VK_S) // left down
-				rtLegDown = true;
+			if (ke.getKeyCode() == KeyEvent.VK_D || ke.getKeyCode() == KeyEvent.VK_W) // Forward right
+				ltUp = true;
+			if (ke.getKeyCode() == KeyEvent.VK_D || ke.getKeyCode() == KeyEvent.VK_S) // Reverse right
+				ltDown = true;
+			if (ke.getKeyCode() == KeyEvent.VK_A || ke.getKeyCode() == KeyEvent.VK_W) // Forward left
+				rtUp = true;
+			if (ke.getKeyCode() == KeyEvent.VK_A || ke.getKeyCode() == KeyEvent.VK_S) // Reverse left
+				rtDown = true;
 		}
 		if (ke.getID() == KeyEvent.KEY_RELEASED) {
-			if (ke.getKeyCode() == KeyEvent.VK_D ||  ke.getKeyCode() == KeyEvent.VK_W) // right UP
-				ltLegUp = false;
-			if (ke.getKeyCode() == KeyEvent.VK_D ||  ke.getKeyCode() == KeyEvent.VK_S) // right down
-				ltLegDown = false;
-			if (ke.getKeyCode() == KeyEvent.VK_A ||  ke.getKeyCode() == KeyEvent.VK_W) // left UP
-				rtLegUp = false;
-			if (ke.getKeyCode() == KeyEvent.VK_A ||  ke.getKeyCode() == KeyEvent.VK_S) // left down
-				rtLegDown = false;
+			if (ke.getKeyCode() == KeyEvent.VK_D ||  ke.getKeyCode() == KeyEvent.VK_W) // Forward right
+				ltUp = false;
+			if (ke.getKeyCode() == KeyEvent.VK_D ||  ke.getKeyCode() == KeyEvent.VK_S) // Reverse right
+				ltDown = false;
+			if (ke.getKeyCode() == KeyEvent.VK_A ||  ke.getKeyCode() == KeyEvent.VK_W) // Forward left
+				rtUp = false;
+			if (ke.getKeyCode() == KeyEvent.VK_A ||  ke.getKeyCode() == KeyEvent.VK_S) // Reverse left
+				rtDown = false;
 		}
 	}
 
@@ -170,28 +174,28 @@ public class Mech implements ColisionInterface, UIInterface {
 	}
 
 	private void changeSpeed() {
-		if (rtLegUp) {
+		if (rtUp) {
 			if (rightLegSpeed < maxLegSpeed)
 				if (rtAlarm < currentTime) {
 					rightLegSpeed += notch;
 					rtAlarm = currentTime + 100000000;
 				}
 		}
-		if (rtLegDown) {
+		if (rtDown) {
 			if (rightLegSpeed > minLegSpeed)
 				if (rtAlarm < currentTime) {
 					rightLegSpeed -= notch;
 					rtAlarm = currentTime + 100000000;
 				}
 		}
-		if (ltLegUp) {
+		if (ltUp) {
 			if (leftLegSpeed < maxLegSpeed)
 				if (ltAlarm < currentTime) {
 					leftLegSpeed += notch;
 					ltAlarm = currentTime + 100000000;
 				}
 		}
-		if (ltLegDown) {
+		if (ltDown) {
 			if (leftLegSpeed > minLegSpeed)
 				if (ltAlarm < currentTime) {
 					leftLegSpeed -= notch;
@@ -199,7 +203,7 @@ public class Mech implements ColisionInterface, UIInterface {
 				}
 		}
 		// slow down lt
-		if (!ltLegDown && !ltLegUp) {
+		if (!ltDown && !ltUp) {
 			if (ltAlarm < currentTime) {
 				if (leftLegSpeed >= 0.1)
 					leftLegSpeed -= notch;
@@ -209,7 +213,7 @@ public class Mech implements ColisionInterface, UIInterface {
 			}
 		}
 		// slow down rt
-		if (!rtLegDown && !rtLegUp) {
+		if (!rtDown && !rtUp) {
 			if (rtAlarm < currentTime) {
 				if (rightLegSpeed > 0)
 					rightLegSpeed -= notch;
@@ -242,34 +246,36 @@ public class Mech implements ColisionInterface, UIInterface {
 	private void calcMovement() {
 		doubleX -= xVel;
 		doubleY -= yVel;
-		x = (int) doubleX;
-		y = (int) doubleY;
+		intX = (int) doubleX;
+		intY = (int) doubleY;
 	}
 
 	private void checkFrameCollision() {
 		/* Check for right collision */
 
-		if ((x + width / 2) >= displayBounds.width) {
+		if ((intX + width / 2) >= displayBounds.width) {
 			doubleX = (displayBounds.width - width / 2 - 1);
 		}
 
 		/* Check for left collision */
 
-		if (x <= 0) {
-			doubleX = (0);
+		if (intX <= 0) {
+			doubleX = (1);
 		}
 
 		/* Check for bottom collision */
 
-		if ((y + height / 2) >= displayBounds.height) {
+		if ((intY + height / 2) >= displayBounds.height) {
 			doubleY = (displayBounds.height - height / 2 - 1);
 		}
 
 		/* Check for top collision */
 
-		if (y <= 0) {
-			doubleY = (0);
+		if (intY <= 0) {
+			doubleY = (1);
 		}
+		intX = (int) doubleX;
+		intY = (int) doubleY;
 	}
 
 	@Override
@@ -280,8 +286,7 @@ public class Mech implements ColisionInterface, UIInterface {
 
 	@Override
 	public Rectangle intersects(Rectangle boundingBox) {
-		// TODO Auto-generated method stub
-		return null;
+		return ( this.boundingBox.intersects( boundingBox ) ? this.boundingBox.getBounds() : null );
 	}
 
 	@Override

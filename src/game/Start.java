@@ -19,9 +19,9 @@ import engine.events.GameEvent.GameEventType;
 import engine.events.GameEventDispatcher;
 import engine.events.GameEventKeyboard;
 import engine.events.GameEventMouse;
-import engine.interfaces.ImageInterface;
 import engine.interfaces.LevelInterface;
 import engine.interfaces.UserInputInterface;
+import engine.sprites.interfaces.ImageInterface;
 import engine.tools.DebugInfo;
 import game.levels.Level01;
 import game.levels.MainMenu;
@@ -215,7 +215,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	@Override
 	public void keyboardEvent(KeyEvent ke) {
 		
-		//Fix Repeated calls when looped
+		//TODO Fix Repeated calls when looped
 		
 		input.keyboardEvent(ke);
 
@@ -225,6 +225,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 					GameEventType.End, this));
 		}
 		if (input.isActive(KeyEvent.VK_ESCAPE)) {
+			input.takeActive(KeyEvent.VK_ESCAPE);
 			if (currentGameLevel instanceof MainMenu)
 				if ((loadedLevel instanceof MainMenu)) {
 					// Do Nothing
@@ -241,6 +242,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		 */
 			// Pause or Run
 			if (input.isActive(KeyEvent.VK_P)) {
+				input.takeActive(KeyEvent.VK_P);
 				if (gameState == GameState.RUNNING) {
 					gameState = GameState.PAUSED;
 				} else if (gameState == GameState.PAUSED) {

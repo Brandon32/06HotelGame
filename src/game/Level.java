@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import engine.interfaces.ColisionInterface;
-import engine.interfaces.ImageInterface;
 import engine.interfaces.LevelInterface;
-import engine.interfaces.UIInterface;
+import engine.sprites.interfaces.ColisionInterface;
+import engine.sprites.interfaces.ImageInterface;
+import engine.sprites.interfaces.UIInterface;
 import engine.tools.DebugInfo;
 
 public abstract class Level implements LevelInterface {

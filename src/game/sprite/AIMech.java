@@ -8,8 +8,8 @@ import java.awt.Rectangle;
 
 import engine.GameDisplay;
 import engine.GameEngine;
-import engine.interfaces.ColisionInterface;
-import engine.interfaces.ImageInterface;
+import engine.sprites.interfaces.ColisionInterface;
+import engine.sprites.interfaces.ImageInterface;
 @SuppressWarnings("unused")
 public class AIMech implements ColisionInterface{
 

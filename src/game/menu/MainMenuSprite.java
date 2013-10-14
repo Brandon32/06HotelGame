@@ -9,8 +9,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import engine.GameDisplay;
-import engine.interfaces.ImageInterface;
-import engine.interfaces.UIInterface;
+import engine.sprites.interfaces.ImageInterface;
+import engine.sprites.interfaces.UIInterface;
 
 public class MainMenuSprite implements UIInterface {
 	private final int MAX_SELECTIONS = 5;
