@@ -5,13 +5,21 @@ public class Position {
 	int intX, intY;
 	double doubleX,doubleY;
 
-	public double getX() {
-		return doubleX;
+	public Position(){
+		set(0,0);
+	}
+	
+	public Position(int x, int y) {
+		set(x,y);
 	}
 
-	public double getY() {
-		return doubleY;
+	public int getX() {
+		return intX;
 	}
+
+	public int getY() {
+		return intY;
+	} 
 	
 	public void set(int x, int y){
 		this.intX = x;
@@ -45,6 +53,16 @@ public class Position {
 		intY = (int)y;
 	}
 
-
-	
+	public void moveX(double m) {
+		setX(doubleX + m);
+	}
+	public void moveY(double m) {
+		setY(doubleY + m);
+	}
+	public void moveX(int m) {
+		setX(intX + m);
+	}
+	public void moveY(int m) {
+		setY(intY + m);
+	}
 }

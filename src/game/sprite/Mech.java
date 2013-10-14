@@ -13,6 +13,7 @@ import engine.GameEngine;
 import engine.sprites.interfaces.ColisionInterface;
 import engine.sprites.interfaces.ImageInterface;
 import engine.sprites.interfaces.UIInterface;
+import engine.sprites.tools.Position;
 
 public class Mech implements ColisionInterface, UIInterface {
 
@@ -35,10 +36,7 @@ public class Mech implements ColisionInterface, UIInterface {
 	private double maxLegSpeed = 1;
 	private double minLegSpeed = -1;
 	double angle = 0;
-	private double doubleX = 100;
-	private double doubleY = 100;
-	private int intX = 100;
-	private int intY = 100;
+	private Position position = new Position(100,100);
 	private int width = 20;
 	private int height = 20;
 	private double xVel;
@@ -50,16 +48,16 @@ public class Mech implements ColisionInterface, UIInterface {
 	private long currentTime = GameEngine.getCurrentTime();
 	private long rtAlarm = GameEngine.getCurrentTime();
 	private long ltAlarm = rtAlarm;
-	private Rectangle boundingBox;
+	private Rectangle boundingBox = new Rectangle();
 
 	public Mech() {
+		
 		displayBounds = GameDisplay.getBounds();
 		f1 = new Font("Times New Roman", Font.BOLD, (int) 12);
-
-		doubleX = displayBounds.width / 2;
-		doubleY = displayBounds.height / 2;
 		
-		boundingBox.setLocation(intX, intY);
+		position.set(displayBounds.width / 2, displayBounds.height / 2);
+		
+		boundingBox.setLocation(position.getX(), position.getY());
 		
 	}
 
@@ -77,9 +75,9 @@ public class Mech implements ColisionInterface, UIInterface {
 	@Override
 	public void draw(Graphics2D g) {
 
-		g.rotate(-angle, intX, intY);// mech
+		g.rotate(-angle, position.getX(), position.getY());// mech
 		g.setColor(Color.BLUE);
-		g.fillRect(intX - width / 2, intY - height / 2, width, height);
+		g.fillRect(position.getX()- width / 2, position.getY() - height / 2, width, height);
 
 		// top left
 		if (leftLegSpeed > 0)
@@ -87,7 +85,7 @@ public class Mech implements ColisionInterface, UIInterface {
 					155, 155));
 		else
 			g.setColor(new Color(0, 155, 155));
-		g.fillOval(intX - width / 2, intY - height / 2, 10, 10);
+		g.fillOval(position.getX() - width / 2, position.getY() - height / 2, 10, 10);
 
 		// botom left
 		if (leftLegSpeed <= 0)
@@ -95,7 +93,7 @@ public class Mech implements ColisionInterface, UIInterface {
 					155, 155));
 		else
 			g.setColor(new Color(0, 155, 155));
-		g.fillOval(intX - width / 2, intY, 10, 10);
+		g.fillOval(position.getX() - width / 2, position.getY(), 10, 10);
 
 		// top right
 		if (rightLegSpeed > 0)
@@ -103,7 +101,7 @@ public class Mech implements ColisionInterface, UIInterface {
 					155, 155));
 		else
 			g.setColor(new Color(0, 155, 155));
-		g.fillOval(intX, intY - height / 2, 10, 10);
+		g.fillOval(position.getX(), position.getY() - height / 2, 10, 10);
 
 		// botom right
 		if (rightLegSpeed <= 0)
@@ -111,36 +109,36 @@ public class Mech implements ColisionInterface, UIInterface {
 					155, 155));
 		else
 			g.setColor(new Color(0, 155, 155));
-		g.fillOval(intX, intY, 10, 10);
+		g.fillOval(position.getX(), position.getY(), 10, 10);
 
-		g.rotate(angle, intX, intY);// end mech
+		g.rotate(angle, position.getX(), position.getY());// end mech
 
 		g.setColor(Color.BLACK);
-		g.drawLine(intX, intY, intX - (int) (xVel * 20), intY - (int) (yVel * 20)); // movement
+		g.drawLine(position.getX(), position.getY(), position.getX() - (int) (xVel * 20), position.getY() - (int) (yVel * 20)); // movement
 																		// direction
 		g.setColor(Color.red);
-		g.drawLine(intX, intY, (int) (intX - Math.sin(angle) * 10),
-				(int) (intY - Math.cos(angle) * 10)); // facing direction
+		g.drawLine(position.getX(), position.getY(), (int) (position.getX() - Math.sin(angle) * 10),
+				(int) (position.getY() - Math.cos(angle) * 10)); // facing direction
 
 		// debug
 		{
 			g.setFont(f1);
 			g.setColor(Color.RED);
-			g.drawRect(intX + 99, intY + 89, 200, 200);
-			g.drawLine(intX + width/2, intY + height/2, intX + 99, intY + 89);
+			g.drawRect(position.getX() + 99, position.getY() + 89, 200, 200);
+			g.drawLine(position.getX() + width/2, position.getY() + height/2, position.getX() + 99, position.getY() + 89);
 			g.drawString(
 					"Right Speed: " + String.format("%.3f", rightLegSpeed * 10),
-					intX + 100, intY + 100);
+					position.getX() + 100, position.getY() + 100);
 			g.drawString(
 					"Left Speed:  " + String.format("%.3f", leftLegSpeed * 10),
-					intX + 100, intY + 110);
+					position.getX() + 100, position.getY() + 110);
 			g.drawString("Angle: " + (int) Math.toDegrees(angle) + " Degrees",
-					intX + 100, intY + 120);
-			g.drawString("Speed: " + Math.round(speed * 10), intX + 100, intY + 130);
+					position.getX() + 100, position.getY() + 120);
+			g.drawString("Speed: " + Math.round(speed * 10), position.getX() + 100, position.getY() + 130);
 			g.drawString("X Velocity: " + String.format("%.3f", xVel * 10),
-					intX + 100, intY + 140);
+					position.getX() + 100, position.getY() + 140);
 			g.drawString("Y Velocity: " + String.format("%.3f", yVel * 10),
-					intX + 100, intY + 150);
+					position.getX() + 100, position.getY() + 150);
 		}
 	}
 
@@ -244,38 +242,34 @@ public class Mech implements ColisionInterface, UIInterface {
 	}
 
 	private void calcMovement() {
-		doubleX -= xVel;
-		doubleY -= yVel;
-		intX = (int) doubleX;
-		intY = (int) doubleY;
+		position.moveX(-xVel);
+		position.moveY(-yVel);
 	}
 
 	private void checkFrameCollision() {
 		/* Check for right collision */
 
-		if ((intX + width / 2) >= displayBounds.width) {
-			doubleX = (displayBounds.width - width / 2 - 1);
+		if ((position.getX() + width / 2) >= displayBounds.width) {
+			position.setX(displayBounds.width - width / 2 - 1);
 		}
 
 		/* Check for left collision */
 
-		if (intX <= 0) {
-			doubleX = (1);
+		if (position.getX() <= 0) {
+			position.setX(1);
 		}
 
 		/* Check for bottom collision */
 
-		if ((intY + height / 2) >= displayBounds.height) {
-			doubleY = (displayBounds.height - height / 2 - 1);
+		if ((position.getY() + height / 2) >= displayBounds.height) {
+			position.setY(displayBounds.height - height / 2 - 1);
 		}
 
 		/* Check for top collision */
 
-		if (intY <= 0) {
-			doubleY = (1);
+		if (position.getY() <= 0) {
+			position.setY(1);
 		}
-		intX = (int) doubleX;
-		intY = (int) doubleY;
 	}
 
 	@Override

@@ -17,8 +17,8 @@ public class CharacterObject implements ColisionInterface, UIInterface {
 	public CharacterObject(){
 		position.set(0,0);
 	}
-	public CharacterObject(int x){
-		position.set(0,0);
+	public CharacterObject(int x, int y){
+		position.set(x,y);
 	}
 	
 	@Override
