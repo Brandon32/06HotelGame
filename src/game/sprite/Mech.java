@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 
 import engine.GameDisplay;
 import engine.GameEngine;
+import engine.Keyboard;
 import engine.sprites.interfaces.ColisionInterface;
 import engine.sprites.interfaces.ImageInterface;
 import engine.sprites.interfaces.UIInterface;
@@ -144,26 +145,50 @@ public class Mech implements ColisionInterface, UIInterface {
 
 	@Override
 	public void keyboardEvent(KeyEvent ke) {
-		if (ke.getID() == KeyEvent.KEY_PRESSED) {
-			if (ke.getKeyCode() == KeyEvent.VK_D || ke.getKeyCode() == KeyEvent.VK_W) // Forward right
+		keyboard();
+		
+//		if (ke.getID() == KeyEvent.KEY_PRESSED) {
+//			if (ke.getKeyCode() == KeyEvent.VK_D || ke.getKeyCode() == KeyEvent.VK_W) // Forward right
+//				ltUp = true;
+//			if (ke.getKeyCode() == KeyEvent.VK_D || ke.getKeyCode() == KeyEvent.VK_S) // Reverse right
+//				ltDown = true;
+//			if (ke.getKeyCode() == KeyEvent.VK_A || ke.getKeyCode() == KeyEvent.VK_W) // Forward left
+//				rtUp = true;
+//			if (ke.getKeyCode() == KeyEvent.VK_A || ke.getKeyCode() == KeyEvent.VK_S) // Reverse left
+//				rtDown = true;
+//		}
+//		if (ke.getID() == KeyEvent.KEY_RELEASED) {
+//			if (ke.getKeyCode() == KeyEvent.VK_D ||  ke.getKeyCode() == KeyEvent.VK_W) // Forward right
+//				ltUp = false;
+//			if (ke.getKeyCode() == KeyEvent.VK_D ||  ke.getKeyCode() == KeyEvent.VK_S) // Reverse right
+//				ltDown = false;
+//			if (ke.getKeyCode() == KeyEvent.VK_A ||  ke.getKeyCode() == KeyEvent.VK_W) // Forward left
+//				rtUp = false;
+//			if (ke.getKeyCode() == KeyEvent.VK_A ||  ke.getKeyCode() == KeyEvent.VK_S) // Reverse left
+//				rtDown = false;
+//		}
+	}
+	
+	public void keyboard(){
+			if (Keyboard.isActive(KeyEvent.VK_D) || Keyboard.isActive(KeyEvent.VK_W)) // Forward right
 				ltUp = true;
-			if (ke.getKeyCode() == KeyEvent.VK_D || ke.getKeyCode() == KeyEvent.VK_S) // Reverse right
-				ltDown = true;
-			if (ke.getKeyCode() == KeyEvent.VK_A || ke.getKeyCode() == KeyEvent.VK_W) // Forward left
-				rtUp = true;
-			if (ke.getKeyCode() == KeyEvent.VK_A || ke.getKeyCode() == KeyEvent.VK_S) // Reverse left
-				rtDown = true;
-		}
-		if (ke.getID() == KeyEvent.KEY_RELEASED) {
-			if (ke.getKeyCode() == KeyEvent.VK_D ||  ke.getKeyCode() == KeyEvent.VK_W) // Forward right
+			else
 				ltUp = false;
-			if (ke.getKeyCode() == KeyEvent.VK_D ||  ke.getKeyCode() == KeyEvent.VK_S) // Reverse right
+			
+			if (Keyboard.isActive(KeyEvent.VK_D) || Keyboard.isActive(KeyEvent.VK_S)) // Reverse right
+				ltDown = true;
+			else
 				ltDown = false;
-			if (ke.getKeyCode() == KeyEvent.VK_A ||  ke.getKeyCode() == KeyEvent.VK_W) // Forward left
+				
+			if (Keyboard.isActive(KeyEvent.VK_A) || Keyboard.isActive(KeyEvent.VK_W)) // Forward left
+				rtUp = true;
+			else
 				rtUp = false;
-			if (ke.getKeyCode() == KeyEvent.VK_A ||  ke.getKeyCode() == KeyEvent.VK_S) // Reverse left
+			
+			if (Keyboard.isActive(KeyEvent.VK_A) || Keyboard.isActive(KeyEvent.VK_S)) // Reverse left
+				rtDown = true;
+			else
 				rtDown = false;
-		}
 	}
 
 	@Override
