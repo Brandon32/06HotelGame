@@ -6,9 +6,9 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 
 import engine.GameDisplay;
+import engine.Input;
 import engine.sprites.interfaces.ImageInterface;
 import engine.sprites.interfaces.UIInterface;
 
@@ -92,37 +92,41 @@ public class MainMenuSprite implements UIInterface {
 			up = false;
 		}
 	}
+	
+	private void mouseSelect() {
 
+		for (int i = 0; i < MAX_SELECTIONS; i++) {
+			if ((mouseY > height[i] - MAX_SIZE)	&& (mouseY < height[i] + MAX_SIZE))
+				selected = i;
+		}
+	}
+	
 	@Override
-	public void keyboardEvent(KeyEvent ke) {
-		if (ke.getID() == KeyEvent.KEY_PRESSED) {
-			if (ke.getKeyCode() == KeyEvent.VK_W
-					|| ke.getKeyCode() == KeyEvent.VK_UP) // UP
-			{
-				up = true;
-			}
-			if (ke.getKeyCode() == KeyEvent.VK_S
-					|| ke.getKeyCode() == KeyEvent.VK_DOWN) // DOWN
-			{
-				down = true;
-			}
-			if (ke.getKeyCode() == KeyEvent.VK_ENTER) {
-				done = true;
-			}
+	public void keyboardEvent() {
+		if (Input.isActive(KeyEvent.VK_W) || Input.isActive(KeyEvent.VK_UP)) // UP
+		{
+			up = true;
+		}
+		if (Input.isActive(KeyEvent.VK_S) || Input.isActive(KeyEvent.VK_DOWN)) // DOWN
+		{
+			down = true;
+		}
+		if (Input.isActive(KeyEvent.VK_ENTER)) {
+			done = true;
 		}
 	}
 
 	@Override
-	public void mouseEvent(MouseEvent me) {
-		if (mouseX != me.getX()) {
-			mouseX = me.getX();
+	public void mouseEvent() {
+		if (mouseX != Input.getX()) {
+			mouseX = Input.getX();
 			mouseSelect();
 		}
-		if (mouseY != me.getY()) {
-			mouseY = me.getY();
+		if (mouseY != Input.getY()) {
+			mouseY = Input.getY();
 			mouseSelect();
 		}
-		if (me.getButton() == MouseEvent.BUTTON1) {
+		if (Input.getLeftClick()) {
 			done = true;
 		}
 	}
@@ -139,14 +143,7 @@ public class MainMenuSprite implements UIInterface {
 		return (selected);
 	}
 
-	private void mouseSelect() {
 
-		for (int i = 0; i < element.length; i++) {
-			if ((mouseY > height[i] - MAX_SIZE)
-					&& (mouseY < height[i] + MAX_SIZE))
-				selected = i;
-		}
-	}
 
 	void setText(Graphics2D g, int val) {
 		if (selected == val) {

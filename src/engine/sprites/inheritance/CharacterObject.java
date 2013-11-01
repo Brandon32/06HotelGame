@@ -2,8 +2,6 @@ package engine.sprites.inheritance;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 
 import engine.sprites.interfaces.ColisionInterface;
 import engine.sprites.interfaces.ImageInterface;
@@ -46,13 +44,13 @@ public class CharacterObject implements ColisionInterface, UIInterface {
 	}
 
 	@Override
-	public void keyboardEvent(KeyEvent ke) {
+	public void keyboardEvent() {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void mouseEvent(MouseEvent me) {
+	public void mouseEvent() {
 		// TODO Auto-generated method stub
 
 	}

@@ -1,8 +1,6 @@
 package engine.interfaces;
 
 import java.awt.Graphics2D;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 
 import engine.sprites.interfaces.ImageInterface;
 
@@ -38,14 +36,14 @@ public interface LevelInterface {
 	 * 
 	 * @param ke
 	 */
-	public abstract void keyboardEvent(KeyEvent ke);
+	public abstract void keyboardEvent();
 
 	/**
 	 * Receive a mouse event.
 	 * 
 	 * @param me
 	 */
-	public abstract void mouseEvent(MouseEvent me);
+	public abstract void mouseEvent();
 
 	public abstract void clearLists();
 

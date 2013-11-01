@@ -1,8 +1,6 @@
 package game;
 
 import java.awt.Graphics2D;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -83,10 +81,10 @@ public abstract class Level implements LevelInterface {
 	 * Send the keyboard event to each Sprite
 	 */
 	@Override
-	public void keyboardEvent(KeyEvent ke) {
+	public void keyboardEvent() {
 		synchronized (keyList) {
 			for (UIInterface spriteObj : keyList) {
-				spriteObj.keyboardEvent(ke);
+				spriteObj.keyboardEvent();
 			}
 		}
 	}
@@ -95,10 +93,10 @@ public abstract class Level implements LevelInterface {
 	 * Send the mouse event to each Sprite
 	 */
 	@Override
-	public void mouseEvent(MouseEvent me) {
+	public void mouseEvent() {
 		synchronized (keyList) {
 			for (UIInterface spriteObj : keyList) {
-				spriteObj.mouseEvent(me);
+				spriteObj.mouseEvent();
 			}
 		}
 	}

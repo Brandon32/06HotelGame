@@ -13,7 +13,7 @@ import engine.Game;
 import engine.GameDisplay;
 import engine.GameEngine;
 import engine.ImageUtil;
-import engine.Keyboard;
+import engine.Input;
 import engine.events.GameEvent;
 import engine.events.GameEvent.GameEventType;
 import engine.events.GameEventDispatcher;
@@ -57,12 +57,17 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	/*--Main--------------------------------------------------------------------------------------------------*/
 
 	public static void main(String[] args) {
-		// if (args[1] == "debug"){
-		// debug = true;
-		// }
+		Start game;
 		while (gameState != GameState.ENDING) {
 			gameState = GameState.STARTING;
-			Start game = new Start();
+			if (args.length > 0)
+				if (args[0] == "debug")
+					game = new Start(true);
+				else
+					game = new Start(false);
+			else
+				game = new Start(true);
+			
 			GameEngine.start(game);
 
 			/**
@@ -70,11 +75,11 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 			 */
 			GameDisplay.dispose();
 		}
-		DebugInfo.debugLog("Stoped");
+		DebugInfo.debugLog("Stoped!");
 	}
 
 	/*--Constructor-------------------------------------------------------------------------------------------*/
-	public Start() {
+	public Start(boolean debug) {
 		/**
 		 * / Get the native resolution / TODO: 16:9 Recommended, Account for 4:3
 		 * and 16:10
@@ -100,7 +105,6 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		 * Add a keyboard listener so we can get key presses
 		 */
 		GameDisplay.addKeyboardListener(this);
-
 		GameDisplay.captureCursor(false);
 		GameDisplay.title(title);
 
@@ -113,6 +117,8 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		if (icon != null) {
 			GameDisplay.icon(icon);
 		}
+
+		DebugInfo.setDebug(debug);
 	}
 
 	/*--END-Of-Constructor------------------------------------------------------------------------------------*/
@@ -211,14 +217,15 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	@Override
 	public void keyboardEvent(KeyEvent ke) {
 
-		Keyboard.keyboardEvent(ke);
+		Input.keyboardEvent(ke);
 
 		// Exit
-		if (Keyboard.isActive(KeyEvent.VK_ESCAPE) && Keyboard.isActive(KeyEvent.VK_SHIFT)) {
+		if (Input.isActive(KeyEvent.VK_ESCAPE)
+				&& Input.isActive(KeyEvent.VK_SHIFT)) {
 			GameEventDispatcher.dispatchEvent(new GameEvent(this,
 					GameEventType.End, this));
 		}
-		if (Keyboard.takeActive(KeyEvent.VK_ESCAPE)) {
+		if (Input.takeActive(KeyEvent.VK_ESCAPE)) {
 			if (currentGameLevel instanceof MainMenu) {
 				if (!(loadedLevel instanceof MainMenu)) {
 					currentGameLevel = loadedLevel;
@@ -232,8 +239,8 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 		 * Check Key Events before sending to sprite
 		 */
 		// Pause or Run
-		if (Keyboard.isActive(KeyEvent.VK_P)) {
-			Keyboard.takeActive(KeyEvent.VK_P);
+		if (Input.isActive(KeyEvent.VK_P)) {
+			Input.takeActive(KeyEvent.VK_P);
 			if (gameState == GameState.RUNNING) {
 				gameState = GameState.PAUSED;
 			} else if (gameState == GameState.PAUSED) {
@@ -241,20 +248,21 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 			}
 		}
 		// Menu
-		if (Keyboard.isActive(KeyEvent.VK_M)) {
+		if (Input.isActive(KeyEvent.VK_M)) {
 			GameEventDispatcher.dispatchEvent(new GameEvent(this,
 					GameEventType.Menu, this));
 		}
 
 		synchronized (currentGameLevel) {
-			currentGameLevel.keyboardEvent(ke);
+			currentGameLevel.keyboardEvent();
 		}
 	}
 
 	@Override
 	public void mouseEvent(MouseEvent me) {
+		Input.mouseEvent(me);
 		synchronized (currentGameLevel) {
-			currentGameLevel.mouseEvent(me);
+			currentGameLevel.mouseEvent();
 		}
 	}
 

@@ -11,7 +11,7 @@ import engine.GameDisplay;
 public class DebugInfo {
 
 	private static Font f1;
-	private static boolean debug = true; // switch to false on release
+	private static boolean debug = false;
 	private static LinkedList<String> shortMsg;
 	private static LinkedList<String> longMsg;
 	private static Dimension displayBounds;
@@ -38,7 +38,6 @@ public class DebugInfo {
 			g.drawString(longMsg.get(a), displayBounds.width - 300,
 					displayBounds.height - ((longMsg.size() - a + 1) * 10));
 		}
-
 	}
 
 	public static void debugShort(String st) {

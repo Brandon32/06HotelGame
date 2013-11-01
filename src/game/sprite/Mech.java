@@ -6,15 +6,15 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 
 import engine.GameDisplay;
 import engine.GameEngine;
-import engine.Keyboard;
+import engine.Input;
 import engine.sprites.interfaces.ColisionInterface;
 import engine.sprites.interfaces.ImageInterface;
 import engine.sprites.interfaces.UIInterface;
 import engine.sprites.tools.Position;
+import engine.tools.DebugInfo;
 
 public class Mech implements ColisionInterface, UIInterface {
 
@@ -22,6 +22,9 @@ public class Mech implements ColisionInterface, UIInterface {
 	private Dimension displayBounds;
 
 	private final double notch = 0.1;
+	private final double maxLegSpeed = 1;
+	private final double minLegSpeed = -1;
+	private final double scale = (1);
 
 	boolean rtArm;
 	boolean ltArm;
@@ -29,15 +32,13 @@ public class Mech implements ColisionInterface, UIInterface {
 	boolean ltPowerArm;
 	boolean rtGrab;
 	boolean ltGrab;
-	private boolean ltDown;
-	private boolean ltUp;
-	private boolean rtDown;
-	private boolean rtUp;
+	private boolean ltBck;
+	private boolean ltFwd;
+	private boolean rtBck;
+	private boolean rtFwd;
 
-	private double maxLegSpeed = 1;
-	private double minLegSpeed = -1;
 	double angle = 0;
-	private Position position = new Position(100,100);
+	private Position position = new Position(100, 100);
 	private int width = 20;
 	private int height = 20;
 	private double xVel;
@@ -51,22 +52,23 @@ public class Mech implements ColisionInterface, UIInterface {
 	private long ltAlarm = rtAlarm;
 	private Rectangle boundingBox = new Rectangle();
 
+	private int mouseX;
+	private int mouseY;
+
 	public Mech() {
-		
+
 		displayBounds = GameDisplay.getBounds();
 		f1 = new Font("Times New Roman", Font.BOLD, (int) 12);
-		
+
 		position.set(displayBounds.width / 2, displayBounds.height / 2);
-		
+
 		boundingBox.setLocation(position.getX(), position.getY());
-		
+
 	}
 
 	@Override
 	public void update() {
-		// TODO: calculate angle
 		currentTime = GameEngine.getCurrentTime();
-		// TODO: calculate speed
 		changeSpeed();
 		recalcAngle();
 		calcMovement();
@@ -78,55 +80,65 @@ public class Mech implements ColisionInterface, UIInterface {
 
 		g.rotate(-angle, position.getX(), position.getY());// mech
 		g.setColor(Color.BLUE);
-		g.fillRect(position.getX()- width / 2, position.getY() - height / 2, width, height);
+		g.fillRect(position.getX() - width / 2, position.getY() - height / 2,
+				width, height);
 
 		// top left
 		if (leftLegSpeed > 0)
-			g.setColor(new Color((int) Math.abs((int) (leftLegSpeed * 231)),
-					155, 155));
+			g.setColor(new Color((int) Math.abs((int) (leftLegSpeed
+					/ maxLegSpeed * 231)), 155, 155));
 		else
 			g.setColor(new Color(0, 155, 155));
-		g.fillOval(position.getX() - width / 2, position.getY() - height / 2, 10, 10);
+		g.fillOval(position.getX() - width / 2, position.getY() - height / 2,
+				10, 10);
 
 		// botom left
 		if (leftLegSpeed <= 0)
-			g.setColor(new Color((int) Math.abs((int) (leftLegSpeed * 231)),
-					155, 155));
+			g.setColor(new Color((int) Math.abs((int) (leftLegSpeed
+					/ maxLegSpeed * 231)), 155, 155));
 		else
 			g.setColor(new Color(0, 155, 155));
 		g.fillOval(position.getX() - width / 2, position.getY(), 10, 10);
 
 		// top right
 		if (rightLegSpeed > 0)
-			g.setColor(new Color((int) Math.abs((int) (rightLegSpeed * 231)),
-					155, 155));
+			g.setColor(new Color((int) Math.abs((int) (rightLegSpeed
+					/ maxLegSpeed * 231)), 155, 155));
 		else
 			g.setColor(new Color(0, 155, 155));
 		g.fillOval(position.getX(), position.getY() - height / 2, 10, 10);
 
 		// botom right
 		if (rightLegSpeed <= 0)
-			g.setColor(new Color((int) Math.abs((int) (rightLegSpeed * 231)),
-					155, 155));
+			g.setColor(new Color((int) Math.abs((int) (rightLegSpeed
+					/ maxLegSpeed * 231)), 155, 155));
 		else
 			g.setColor(new Color(0, 155, 155));
 		g.fillOval(position.getX(), position.getY(), 10, 10);
 
 		g.rotate(angle, position.getX(), position.getY());// end mech
 
+		// movement direction
 		g.setColor(Color.BLACK);
-		g.drawLine(position.getX(), position.getY(), position.getX() - (int) (xVel * 20), position.getY() - (int) (yVel * 20)); // movement
-																		// direction
-		g.setColor(Color.red);
-		g.drawLine(position.getX(), position.getY(), (int) (position.getX() - Math.sin(angle) * 10),
-				(int) (position.getY() - Math.cos(angle) * 10)); // facing direction
+		g.drawLine(position.getX(), position.getY(), position.getX()
+				- (int) (xVel * 20 * scale), position.getY()
+				- (int) (yVel * 20 * scale));
 
-		// debug
-		{
+		// mouse
+		g.drawLine(position.getX(), position.getY(), mouseX, mouseY);
+
+		g.setColor(Color.red);
+		g.drawLine(position.getX(), position.getY(),
+				(int) (position.getX() - Math.sin(angle) * 10),
+				(int) (position.getY() - Math.cos(angle) * 10)); // facing
+																	// direction
+
+		if (DebugInfo.isDebug()) {
 			g.setFont(f1);
 			g.setColor(Color.RED);
 			g.drawRect(position.getX() + 99, position.getY() + 89, 200, 200);
-			g.drawLine(position.getX() + width/2, position.getY() + height/2, position.getX() + 99, position.getY() + 89);
+			g.drawLine(position.getX() + width / 2, position.getY() + height
+					/ 2, position.getX() + 99, position.getY() + 89);
 			g.drawString(
 					"Right Speed: " + String.format("%.3f", rightLegSpeed * 10),
 					position.getX() + 100, position.getY() + 100);
@@ -135,7 +147,8 @@ public class Mech implements ColisionInterface, UIInterface {
 					position.getX() + 100, position.getY() + 110);
 			g.drawString("Angle: " + (int) Math.toDegrees(angle) + " Degrees",
 					position.getX() + 100, position.getY() + 120);
-			g.drawString("Speed: " + Math.round(speed * 10), position.getX() + 100, position.getY() + 130);
+			g.drawString("Speed: " + Math.round(speed * 10),
+					position.getX() + 100, position.getY() + 130);
 			g.drawString("X Velocity: " + String.format("%.3f", xVel * 10),
 					position.getX() + 100, position.getY() + 140);
 			g.drawString("Y Velocity: " + String.format("%.3f", yVel * 10),
@@ -144,104 +157,95 @@ public class Mech implements ColisionInterface, UIInterface {
 	}
 
 	@Override
-	public void keyboardEvent(KeyEvent ke) {
-		keyboard();
-		
-//		if (ke.getID() == KeyEvent.KEY_PRESSED) {
-//			if (ke.getKeyCode() == KeyEvent.VK_D || ke.getKeyCode() == KeyEvent.VK_W) // Forward right
-//				ltUp = true;
-//			if (ke.getKeyCode() == KeyEvent.VK_D || ke.getKeyCode() == KeyEvent.VK_S) // Reverse right
-//				ltDown = true;
-//			if (ke.getKeyCode() == KeyEvent.VK_A || ke.getKeyCode() == KeyEvent.VK_W) // Forward left
-//				rtUp = true;
-//			if (ke.getKeyCode() == KeyEvent.VK_A || ke.getKeyCode() == KeyEvent.VK_S) // Reverse left
-//				rtDown = true;
-//		}
-//		if (ke.getID() == KeyEvent.KEY_RELEASED) {
-//			if (ke.getKeyCode() == KeyEvent.VK_D ||  ke.getKeyCode() == KeyEvent.VK_W) // Forward right
-//				ltUp = false;
-//			if (ke.getKeyCode() == KeyEvent.VK_D ||  ke.getKeyCode() == KeyEvent.VK_S) // Reverse right
-//				ltDown = false;
-//			if (ke.getKeyCode() == KeyEvent.VK_A ||  ke.getKeyCode() == KeyEvent.VK_W) // Forward left
-//				rtUp = false;
-//			if (ke.getKeyCode() == KeyEvent.VK_A ||  ke.getKeyCode() == KeyEvent.VK_S) // Reverse left
-//				rtDown = false;
-//		}
-	}
-	
-	public void keyboard(){
-			if (Keyboard.isActive(KeyEvent.VK_D) || Keyboard.isActive(KeyEvent.VK_W)) // Forward right
-				ltUp = true;
-			else
-				ltUp = false;
-			
-			if (Keyboard.isActive(KeyEvent.VK_D) || Keyboard.isActive(KeyEvent.VK_S)) // Reverse right
-				ltDown = true;
-			else
-				ltDown = false;
-				
-			if (Keyboard.isActive(KeyEvent.VK_A) || Keyboard.isActive(KeyEvent.VK_W)) // Forward left
-				rtUp = true;
-			else
-				rtUp = false;
-			
-			if (Keyboard.isActive(KeyEvent.VK_A) || Keyboard.isActive(KeyEvent.VK_S)) // Reverse left
-				rtDown = true;
-			else
-				rtDown = false;
+	public void keyboardEvent() {
+		 
+			ltFwd = false;
+			rtFwd = false;
+			ltBck = false;
+			rtBck = false;
+		 
+		 
+		// Forward
+		if (Input.isActive(KeyEvent.VK_W)) {
+			ltFwd = true;
+			rtFwd = true;
+		}
+		// Backwards
+		else if (Input.isActive(KeyEvent.VK_S)) {
+			ltBck = true;
+			rtBck = true;
+		}
+		else{
+
+		}
+
+		if (Input.isActive(KeyEvent.VK_E)) // Forward right
+			ltFwd = true;
+		else if (Input.isActive(KeyEvent.VK_D)) // Reverse right
+			ltBck = true;
+
+		if (Input.isActive(KeyEvent.VK_Q)) // Forward left
+			rtFwd = true;
+		else if (Input.isActive(KeyEvent.VK_A)) // Reverse left
+			rtBck = true;
 	}
 
 	@Override
-	public void mouseEvent(MouseEvent me) {
-
+	public void mouseEvent() {
+		mouseX = Input.getX();
+		mouseY = Input.getY();
 	}
 
 	private void changeSpeed() {
-		if (rtUp) {
+		if (rtFwd) {
 			if (rightLegSpeed < maxLegSpeed)
 				if (rtAlarm < currentTime) {
 					rightLegSpeed += notch;
 					rtAlarm = currentTime + 100000000;
 				}
 		}
-		if (rtDown) {
+		if (rtBck) {
 			if (rightLegSpeed > minLegSpeed)
 				if (rtAlarm < currentTime) {
 					rightLegSpeed -= notch;
 					rtAlarm = currentTime + 100000000;
 				}
 		}
-		if (ltUp) {
+		if (ltFwd) {
 			if (leftLegSpeed < maxLegSpeed)
 				if (ltAlarm < currentTime) {
 					leftLegSpeed += notch;
 					ltAlarm = currentTime + 100000000;
 				}
 		}
-		if (ltDown) {
+		if (ltBck) {
 			if (leftLegSpeed > minLegSpeed)
 				if (ltAlarm < currentTime) {
 					leftLegSpeed -= notch;
 					ltAlarm = currentTime + 100000000;
 				}
 		}
-		// slow down lt
-		if (!ltDown && !ltUp) {
+		// slow down left
+		if (!ltBck && !ltFwd) {
 			if (ltAlarm < currentTime) {
-				if (leftLegSpeed >= 0.1)
+				if (leftLegSpeed > notch)
 					leftLegSpeed -= notch;
-				if (leftLegSpeed <= -0.1)
+				else if (leftLegSpeed < -notch)
 					leftLegSpeed += notch;
+				else
+					leftLegSpeed = 0;
 				ltAlarm = currentTime + 100000000;
 			}
 		}
-		// slow down rt
-		if (!rtDown && !rtUp) {
+		// slow down right
+		if (!rtBck && !rtFwd) {
 			if (rtAlarm < currentTime) {
-				if (rightLegSpeed > 0)
+				if (rightLegSpeed > notch)
 					rightLegSpeed -= notch;
-				if (rightLegSpeed < 0)
+				else if (rightLegSpeed < -notch)
 					rightLegSpeed += notch;
+				else
+					rightLegSpeed = 0;
 				rtAlarm = currentTime + 100000000;
 			}
 		}
@@ -267,8 +271,8 @@ public class Mech implements ColisionInterface, UIInterface {
 	}
 
 	private void calcMovement() {
-		position.moveX(-xVel);
-		position.moveY(-yVel);
+		position.moveX(-xVel * scale);
+		position.moveY(-yVel * scale);
 	}
 
 	private void checkFrameCollision() {
@@ -276,24 +280,28 @@ public class Mech implements ColisionInterface, UIInterface {
 
 		if ((position.getX() + width / 2) >= displayBounds.width) {
 			position.setX(displayBounds.width - width / 2 - 1);
+			xVel = 0;
 		}
 
 		/* Check for left collision */
 
-		if (position.getX() <= 0) {
-			position.setX(1);
+		if (position.getX() <= width / 2) {
+			position.setX(width / 2 + 1);
+			xVel = 0;
 		}
 
 		/* Check for bottom collision */
 
 		if ((position.getY() + height / 2) >= displayBounds.height) {
 			position.setY(displayBounds.height - height / 2 - 1);
+			yVel = 0;
 		}
 
 		/* Check for top collision */
 
-		if (position.getY() <= 0) {
-			position.setY(1);
+		if (position.getY() <= height / 2) {
+			position.setY(height / 2 + 1);
+			yVel = 0;
 		}
 	}
 
@@ -305,7 +313,8 @@ public class Mech implements ColisionInterface, UIInterface {
 
 	@Override
 	public Rectangle intersects(Rectangle boundingBox) {
-		return ( this.boundingBox.intersects( boundingBox ) ? this.boundingBox.getBounds() : null );
+		return (this.boundingBox.intersects(boundingBox) ? this.boundingBox
+				.getBounds() : null);
 	}
 
 	@Override
