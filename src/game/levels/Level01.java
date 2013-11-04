@@ -6,8 +6,7 @@ import engine.events.GameEvent;
 import engine.events.GameEvent.GameEventType;
 import engine.events.GameEventDispatcher;
 import game.Level;
-import game.sprite.AIMech;
-import game.sprite.Mech;
+import game.sprite.Hotel;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -15,16 +14,14 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public class Level01 extends Level {
-	private Mech myMech;
+	private Hotel myMech;
 	private BufferedImage backgroundImage;
 	private Dimension displayBounds;
-	private AIMech evilMech;
 
 	public Level01() {
 		super();
 		displayBounds = GameDisplay.getBounds();
-		myMech = new Mech();
-		evilMech = new AIMech();
+		myMech = new Hotel();
 
 		try {
 			backgroundImage = ImageUtil.loadBufferedImage(this,
@@ -34,8 +31,6 @@ public class Level01 extends Level {
 		}
 		GameEventDispatcher.dispatchEvent(new GameEvent(this,
 				GameEventType.AddFirst, myMech));
-		GameEventDispatcher.dispatchEvent(new GameEvent(this,
-				GameEventType.AddFirst, evilMech));
 	}
 
 	@Override

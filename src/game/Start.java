@@ -29,7 +29,7 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 	/**
 	 * Our list of sprites
 	 */
-	private static final String GAME_NAME = "Mech Game";
+	private static final String GAME_NAME = "Hotel Game";
 	private static String title = "Game";
 	private static int displayHeight = 720; // 720p
 	private static int displayWidth = 1280;
@@ -181,14 +181,14 @@ public class Start implements Game, GameEventMouse, GameEventKeyboard {
 				DebugInfo.debugLog("Starting " + GAME_NAME);
 				tPlus = GameEngine.getCurrentTime();
 			}
-			if (System.nanoTime() > tPlus + (1 * 1000000000.0) && count == 0) {
+			if (System.nanoTime() > tPlus + (0.1 * 1000000000.0) && count == 0) {
 				count = 1;
 				loadedLevel = new Loading();
 				currentGameLevel = loadedLevel;
 				tPlus = System.nanoTime();
 				DebugInfo.debugLog("Loading");
 			}
-			if (System.nanoTime() > tPlus + (1 * 1000000000.0) && count == 1) {
+			if (System.nanoTime() > tPlus + (0.1 * 1000000000.0) && count == 1) {
 				count = 2;
 				loadedLevel = new MainMenu();
 				currentGameLevel = loadedLevel;
